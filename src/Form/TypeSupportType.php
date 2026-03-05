@@ -13,7 +13,7 @@ class TypeSupportType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('picto')
+            ->add('description')
         ;
     }
 

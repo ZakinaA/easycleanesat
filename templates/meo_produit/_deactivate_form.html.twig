@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_meo_produit_toggle_actif', {'id': meo_produit.id}) }}" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('toggle_actif' ~ meo_produit.id) }}">
+    <button type="submit" class="btn {% if meo_produit.actif %}btn-success{% else %}btn-danger{% endif %}" onclick="return confirm('Confirmer le changement d\'état ?');">
+        {% if meo_produit.actif %}✓ Actif{% else %}✗ Désactivé{% endif %}
+    </button>
+</form>

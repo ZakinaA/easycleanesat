@@ -32,6 +32,19 @@ final class TypeZoneController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($typeZone);
             $entityManager->flush();
+
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoTypeZonePNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $typeZone->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $typeZone->setPicto($pictoFileName);
+                $entityManager->flush();
+            }
+
             return $this->redirectToRoute('app_type_zone_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -56,6 +69,17 @@ final class TypeZoneController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoTypeZonePNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $typeZone->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $typeZone->setPicto($pictoFileName);
+            }
+
             $entityManager->flush();
             return $this->redirectToRoute('app_type_zone_index', [], Response::HTTP_SEE_OTHER);
         }

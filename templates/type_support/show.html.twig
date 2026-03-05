@@ -1,30 +1,25 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Type de support{% endblock %}
-
+{% block title %}Type de support
+{% endblock %}
 {% block body %}
-    <h1>Type de support</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ type_support.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ type_support.nom }}</td>
-            </tr>
-            <tr>
-                <th>Picto</th>
-                <td>{{ type_support.picto }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_type_support_index') }}">retour à la liste</a>
-
-    <a href="{{ path('app_type_support_edit', {'id': type_support.id}) }}">Modifier</a>
-
-    {{ include('type_support/_delete_form.html.twig') }}
+	<div class="page-header">
+		<h1>{{ type_support.nom }}</h1>
+	</div>
+	<div class="card">
+		<ul class="info-list">
+			<li>
+				<span class="info-label">Nom :</span>
+				<span>{{ type_support.nom }}</span>
+			</li>
+			<li>
+				<span class="info-label">Description :</span>
+				<span>{{ type_support.description ?? 'Aucune' }}</span>
+			</li>
+		</ul>
+	</div>
+	<div class="btn-group mt-3">
+		<a href="{{ path('app_type_support_index') }}" class="btn btn-secondary">Retour a la liste</a>
+		<a href="{{ path('app_type_support_edit', {'id': type_support.id}) }}" class="btn btn-secondary">Modifier</a>
+		{{ include('type_support/_delete_form.html.twig') }}
+	</div>
 {% endblock %}

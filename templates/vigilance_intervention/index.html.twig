@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}VigilanceIntervention index{% endblock %}
 
@@ -19,8 +19,8 @@
                 <td>{{ vigilance_intervention.id }}</td>
                 <td>{{ vigilance_intervention.detail }}</td>
                 <td>
-                    <a href="{{ path('app_vigilance_intervention_show', {'id': vigilance_intervention.id}) }}">show</a>
-                    <a href="{{ path('app_vigilance_intervention_edit', {'id': vigilance_intervention.id}) }}">edit</a>
+                    <a href="{{ path('app_vigilance_intervention_show', {'id': vigilance_intervention.id}) }}">Afficher</a>
+                    <a href="{{ path('app_vigilance_intervention_edit', {'id': vigilance_intervention.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +31,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_vigilance_intervention_new') }}">Create new</a>
+    <a href="{{ path('app_vigilance_intervention_new') }}">Creer</a>
 {% endblock %}

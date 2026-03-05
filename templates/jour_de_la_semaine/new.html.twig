@@ -1,11 +1,11 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}New JourDeLaSemaine{% endblock %}
+{% block title %}Creer JourDeLaSemaine{% endblock %}
 
 {% block body %}
-    <h1>Create new JourDeLaSemaine</h1>
+    <h1>Creer JourDeLaSemaine</h1>
 
     {{ include('jour_de_la_semaine/_form.html.twig') }}
 
-    <a href="{{ path('app_jour_de_la_semaine_index') }}">back to list</a>
+    <a href="{{ path('app_jour_de_la_semaine_index') }}">Retour a la liste</a>
 {% endblock %}

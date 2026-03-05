@@ -30,6 +30,9 @@ class Actions
     #[ORM\ManyToMany(targetEntity: Intervention::class, inversedBy: 'actions')]
     private Collection $intervention;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $actif = true;
+
     public function __construct()
     {
         $this->necessaire = new ArrayCollection();
@@ -97,6 +100,18 @@ class Actions
     public function removeIntervention(Intervention $intervention): static
     {
         $this->intervention->removeElement($intervention);
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

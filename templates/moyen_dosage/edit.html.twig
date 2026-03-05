@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit MoyenDosage{% endblock %}
+{% block title %}Modifier Moyen de dosage{% endblock %}
 
 {% block body %}
-    <h1>Edit MoyenDosage</h1>
+    <h1>Modifier Moyen de dosage</h1>
 
-    {{ include('moyen_dosage/_form.html.twig', {'button_label': 'Update'}) }}
+    <p><strong>Picto actuel :</strong> {{ moyen_dosage.picto ?: '-' }}</p>
 
-    <a href="{{ path('app_moyen_dosage_index') }}">back to list</a>
+    {{ include('moyen_dosage/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
+
+    <a href="{{ path('app_moyen_dosage_index') }}">Retour a la liste</a>
 
     {{ include('moyen_dosage/_delete_form.html.twig') }}
 {% endblock %}

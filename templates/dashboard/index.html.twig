@@ -1,22 +1,30 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}Dashboard
 {% endblock %}
-
 {% block body %}
 	<section class="dashboard-hero">
 		<h1>Dashboard</h1>
 		<p>Acces rapide aux actions principales de l'application</p>
 	</section>
-
 	<section class="dashboard-actions">
 		<a class="dashboard-action" href="{{ path('app_client_index') }}">
 			<strong>Liste des clients</strong>
-			<span>Consulter et gerer les utilisateurs.</span>
+			<span>Consulter et gerer les clients.</span>
 		</a>
-		<a class="dashboard-action" href="/easycleanesat/public/login">
-			<strong>Connexion admin</strong>
-			<span>Acceder aux modifications d'administration.</span>
+		<a class="dashboard-action" href="{{ path('app_intervention_new') }}">
+			<strong>Ajouter une intervention</strong>
+			<span>Creer une nouvelle intervention.</span>
 		</a>
+		{% if app.user and is_granted('ROLE_ADMIN') %}
+			<a class="dashboard-action" href="{{ path('app_admin') }}">
+				<strong>Administration</strong>
+				<span>Gerer les clients, sites, contrats, types.</span>
+			</a>
+		{% else %}
+			<a class="dashboard-action" href="{{ path('app_login') }}">
+				<strong>Connexion admin</strong>
+				<span>Acceder aux modifications d'administration.</span>
+			</a>
+		{% endif %}
 	</section>
 {% endblock %}

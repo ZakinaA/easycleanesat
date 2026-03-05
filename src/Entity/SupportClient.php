@@ -13,7 +13,7 @@ class SupportClient
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'supportClients')]
+    #[ORM\ManyToOne(inversedBy: 'supportsClient')]
     private ?ZonesClient $zonesClient = null;
 
     #[ORM\ManyToOne(inversedBy: 'supportClients')]

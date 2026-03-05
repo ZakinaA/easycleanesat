@@ -19,7 +19,15 @@ final class ActionsController extends AbstractController
     public function index(ActionsRepository $actionsRepository): Response
     {
         return $this->render('actions/index.html.twig', [
-            'actions' => $actionsRepository->findAll(),
+            'actions' => $actionsRepository->findAllActif(),
+        ]);
+    }
+
+    #[Route('/inactif', name: 'app_actions_inactif', methods: ['GET'])]
+    public function indexInactif(ActionsRepository $actionsRepository): Response
+    {
+        return $this->render('actions/index_inactif.html.twig', [
+            'actions' => $actionsRepository->findAllInactif(),
         ]);
     }
 
@@ -84,5 +92,16 @@ final class ActionsController extends AbstractController
         }
 
         return $this->redirectToRoute('app_actions_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/toggle-actif', name: 'app_actions_toggle_actif', methods: ['POST'])]
+    public function toggleActif(Request $request, Actions $action, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle_actif'.$action->getId(), $request->getPayload()->getString('_token'))) {
+            $action->setActif(!$action->isActif());
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_actions_show', ['id' => $action->getId()], Response::HTTP_SEE_OTHER);
     }
 }

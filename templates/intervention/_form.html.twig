@@ -1,4 +1,88 @@
+<div data-controller="intervention-form"
+     data-intervention-form-sites-url-value="{{ path('api_sites_by_client', {'clientId': '__CLIENT_ID__'}) }}"
+     data-intervention-form-contrats-url-value="{{ path('api_contrats_by_site', {'siteId': '__SITE_ID__'}) }}"
+     data-intervention-form-zones-url-value="{{ path('api_zones_by_site', {'siteId': '__SITE_ID__'}) }}">
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div>
+        {{ form_label(form.client) }}
+        {{ form_widget(form.client, {
+            'attr': {
+                'data-intervention-form-target': 'client',
+                'data-action': 'change->intervention-form#onClientChange'
+            }
+        }) }}
+        {{ form_errors(form.client) }}
+    </div>
+    
+    <div>
+        {{ form_label(form.site) }}
+        {{ form_widget(form.site, {
+            'attr': {
+                'data-intervention-form-target': 'site',
+                'data-action': 'change->intervention-form#onSiteChange'
+            }
+        }) }}
+        {{ form_errors(form.site) }}
+    </div>
+    
+    <div>
+        {{ form_label(form.contrat) }}
+        {{ form_widget(form.contrat, {
+            'attr': {
+                'data-intervention-form-target': 'contrat'
+            }
+        }) }}
+        {{ form_errors(form.contrat) }}
+    </div>
+    
+    <div>
+        {{ form_label(form.zonesClient) }}
+        {{ form_widget(form.zonesClient, {
+            'attr': {
+                'data-intervention-form-target': 'zone'
+            }
+        }) }}
+        {{ form_errors(form.zonesClient) }}
+    </div>
+    {{ form_row(form.redacteur) }}
+    {{ form_row(form.dateCreation) }}
+    {{ form_row(form.nbTravailleur) }}
+    
+    <div class="form-group">
+        <label>Durée</label>
+        <div class="duree-container">
+            {{ form_widget(form.dureeHeure, {'attr': {'class': 'duree-input'}}) }}
+            <span class="duree-separator">:</span>
+            {{ form_widget(form.dureeMinute, {'attr': {'class': 'duree-input'}}) }}
+        </div>
+        {{ form_errors(form.dureeHeure) }}
+        {{ form_errors(form.dureeMinute) }}
+    </div>
+    
+    {{ form_row(form.elementSecurites) }}
+    
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
+<style>
+.duree-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.duree-input {
+    width: 80px;
+    padding: 8px;
+    font-size: 1.2em;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.duree-separator {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+</style>

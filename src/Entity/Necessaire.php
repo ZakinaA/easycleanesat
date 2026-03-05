@@ -31,6 +31,9 @@ class Necessaire
     #[ORM\JoinColumn(nullable: false)]
     private ?TypeNecessaire $type_necessaire = null;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $actif = true;
+
     public function __construct()
     {
         $this->actions = new ArrayCollection();
@@ -100,6 +103,18 @@ class Necessaire
     public function setTypeNecessaire(?TypeNecessaire $type_necessaire): static
     {
         $this->type_necessaire = $type_necessaire;
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

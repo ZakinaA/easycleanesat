@@ -18,7 +18,15 @@ final class NecessaireController extends AbstractController
     public function index(NecessaireRepository $necessaireRepository): Response
     {
         return $this->render('necessaire/index.html.twig', [
-            'necessaires' => $necessaireRepository->findAll(),
+            'necessaires' => $necessaireRepository->findAllActif(),
+        ]);
+    }
+
+    #[Route('/inactif', name: 'app_necessaire_inactif', methods: ['GET'])]
+    public function indexInactif(NecessaireRepository $necessaireRepository): Response
+    {
+        return $this->render('necessaire/index_inactif.html.twig', [
+            'necessaires' => $necessaireRepository->findAllInactif(),
         ]);
     }
 
@@ -77,5 +85,16 @@ final class NecessaireController extends AbstractController
         }
 
         return $this->redirectToRoute('app_necessaire_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/toggle-actif', name: 'app_necessaire_toggle_actif', methods: ['POST'])]
+    public function toggleActif(Request $request, Necessaire $necessaire, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle_actif'.$necessaire->getId(), $request->getPayload()->getString('_token'))) {
+            $necessaire->setActif(!$necessaire->isActif());
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_necessaire_show', ['id' => $necessaire->getId()], Response::HTTP_SEE_OTHER);
     }
 }

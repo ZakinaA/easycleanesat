@@ -29,7 +29,7 @@
 
 				--color-success: #2d7a5f;
 				--color-warning: #b8860b;
-				--color-danger: #b83232;
+				--color-danger: #2c3e50;
 				--color-danger-light: #f3d6d6;
 
 				--header-bg: #2c3e50;
@@ -635,7 +635,7 @@
 				input,
 				select,
 				textarea {
-				/* width: 100%; */
+					/* width: 100%; */
 					color: var(--color-text);
 					padding: 0.625rem 0.75rem;
 					font: inherit;
@@ -664,74 +664,75 @@
 					display: grid;
 					gap: 1rem;
 					grid-template-columns: repeat(2, minmax(0, 1fr));
-				tr {
-					margin-bottom: 0.75rem;
-					border: 1px solid var(--color-border);
-					border-radius: var(--radius-md);
+					tr {
+						margin-bottom: 0.75rem;
+						border: 1px solid var(--color-border);
+						border-radius: var(--radius-md);
+					}
+					td {
+						display: flex;
+						justify-content: space-between;
+						padding: 0.5rem 0.75rem;
+						border-bottom: 1px solid var(--color-border);
+					}
+					td:last-child {
+						border-bottom: none;
+					}
 				}
-				td {
-					display: flex;
-					justify-content: space-between;
-					padding: 0.5rem 0.75rem;
-					border-bottom: 1px solid var(--color-border);
-				}
-				td:last-child {
-					border-bottom: none;
-				}
-			}
 
-			@keyframes fadeIn {
-				from {
-					opacity: 0;
-					transform: translateY(6px);
+				@keyframes fadeIn {
+					from {
+						opacity: 0;
+						transform: translateY(6px);
+					}
+					to {
+						opacity: 1;
+						transform: translateY(0);
+					}
 				}
-				to {
-					opacity: 1;
-					transform: translateY(0);
+				.app-main > .container {
+					animation: fadeIn 0.25s ease;
 				}
-			}
-			.app-main > .container {
-				animation: fadeIn 0.25s ease;
-			}
-		</style>
-	{% endblock %}
-
-	{% block javascripts %}
-		{% block importmap %}
-			{{ importmap('app') }}
+			</style>
 		{% endblock %}
-	{% endblock %}
-</head>
-<body>
-	<div class="app-shell">
-		<header class="app-header">
-			<div class="container app-header__inner">
-				<a class="app-brand" href="{{ path('app_dashboard') }}">🧹 EasyCleanESAT</a>
-				<form class="header-search" action="{{ path('app_search') }}" method="GET">
-					<input type="text" name="q" placeholder="Rechercher client, site, zone, contrat..." value="{{ app.request.query.get('q') }}">
-					<button type="submit" class="btn btn-sm">Rechercher</button>
-				</form>
-				<nav class="header-nav">
-					<a class="btn btn-sm" href="{{ path('app_client_index') }}">Clients</a>
-					{% if app.request.attributes.get('_route') != 'app_dashboard' %}
-						<a class="btn btn-sm" href="{{ path('app_dashboard') }}">Tableau de bord</a>
-					{% endif %}
-				</nav>
+
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body>
+		<div class="app-shell">
+			<header class="app-header">
+				<div class="container app-header__inner">
+					<a class="app-brand" href="{{ path('app_dashboard') }}">🧹 EasyCleanESAT</a>
+					<form class="header-search" action="{{ path('app_search') }}" method="GET">
+						<input type="text" name="q" placeholder="Rechercher client, site, zone, contrat..." value="{{ app.request.query.get('q') }}">
+						<button type="submit" class="btn btn-sm">Rechercher</button>
+					</form>
+					<nav class="header-nav">
+						<a class="btn btn-sm" href="{{ path('app_client_index') }}">Clients</a>
+						{% if app.request.attributes.get('_route') != 'app_dashboard' %}
+							<a class="btn btn-sm" href="{{ path('app_dashboard') }}">Tableau de bord</a>
+						{% endif %}
+					</nav>
+				</div>
+			</header>
+
+			<main class="app-main">
+				<div class="container"> {% block body %}{% endblock %}
+					</div>
+				</main>
+
+				<footer class="app-footer">
+					<div class="container">
+						EasyCleanESAT &copy;
+						{{ "now"|date("Y") }}
+						— Développé par Marius, Max, Estelle &amp; Benjamin
+					</div>
+				</footer>
 			</div>
-		</header>
-
-		<main class="app-main">
-			<div class="container"> {% block body %}{% endblock %}
-				</div>
-			</main>
-
-			<footer class="app-footer">
-				<div class="container">
-					EasyCleanESAT &copy;
-					{{ "now"|date("Y") }}
-					— Développé par Marius, Max, Estelle &amp; Benjamin
-				</div>
-			</footer>
-		</div>
-	</body>
+		</body>
+	</head>
 </html>

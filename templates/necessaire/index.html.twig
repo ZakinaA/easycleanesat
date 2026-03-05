@@ -1,9 +1,14 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Necessaire index{% endblock %}
 
 {% block body %}
-    <h1>Necessaire index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Nécessaires</h1>
+        <a href="{{ path('app_necessaire_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Créer</a>
+    </div>
+
+    <a href="{{ path('app_necessaire_inactif') }}" class="btn btn-warning" style="margin-bottom: 15px;">Consulter les nécessaires désactivés</a>
 
     <table class="table">
         <thead>
@@ -23,8 +28,8 @@
                 <td>{{ necessaire.code }}</td>
                 <td>{{ necessaire.typeNecessaire ? necessaire.typeNecessaire.nom : '' }}</td>
                 <td>
-                    <a href="{{ path('app_necessaire_show', {'id': necessaire.id}) }}">show</a>
-                    <a href="{{ path('app_necessaire_edit', {'id': necessaire.id}) }}">edit</a>
+                    <a href="{{ path('app_necessaire_show', {'id': necessaire.id}) }}">Afficher</a>
+                    <a href="{{ path('app_necessaire_edit', {'id': necessaire.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -34,6 +39,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_necessaire_new') }}">Create new</a>
 {% endblock %}

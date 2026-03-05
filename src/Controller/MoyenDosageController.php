@@ -53,10 +53,32 @@ final class MoyenDosageController extends AbstractController
     #[Route('/{id}/edit', name: 'app_moyen_dosage_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, MoyenDosage $moyenDosage, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(MoyenDosageType::class, $moyenDosage);
+        $form = $this->createForm(MoyenDosageType::class, $moyenDosage, [
+            'picto_upload_mode' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir').'/public/PictoMoyenDosagePNG';
+
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+
+                $pictoFileName = $moyenDosage->getId().'.png';
+                $targetPath = $targetDirectory.'/'.$pictoFileName;
+
+                if (file_exists($targetPath)) {
+                    unlink($targetPath);
+                }
+
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $moyenDosage->setPicto($pictoFileName);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_moyen_dosage_index', [], Response::HTTP_SEE_OTHER);

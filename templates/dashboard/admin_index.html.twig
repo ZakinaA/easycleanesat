@@ -1,45 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard Admin{% endblock %}
+{% block title %}Dashboard Admin
+{% endblock %}
 
 {% block body %}
-    <section class="dashboard-hero">
-        <h1>Dashboard Administrateur</h1>
-        <p>Acces rapide aux actions principales de l'application.</p>
-    </section>
+	<div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+		<a href="{{ path('app_logout') }}" class="btn btn-danger">Deconnexion</a>
+	</div>
 
-    <section class="dashboard-actions">
-        <a class="dashboard-action" href="{{ path('app_client_index') }}">
-            <strong>Liste des clients</strong>
-            <span>Consulter et gerer les utilisateurs.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_contrat_index') }}">
-            <strong>Gestion des contrats</strong>
-            <span>Consulter et gerer les contrats.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_intervention_index') }}">
-            <strong>Gestion des interventions</strong>
-            <span>Consulter et gerer les interventions.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_produit_index') }}">
-            <strong>Gestion des produits</strong>
-            <span>Consulter et gerer les produits.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_sites_client_index') }}">
-            <strong>Gestion des sites clients</strong>
-            <span>Consulter et gerer les sites clients.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_element_securite_index') }}">
-            <strong>Elements de securite</strong>
-            <span>Gerer les elements de securite.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_vigilance_index') }}">
-            <strong>Gestion de la vigilance</strong>
-            <span>Consulter et gerer la vigilance.</span>
-        </a>
-        <a class="dashboard-action" href="{{ path('app_logout') }}">
-            <strong>Deconnexion</strong>
-            <span>Se deconnecter de l'interface admin.</span>
-        </a>
-    </section>
+	<section class="dashboard-hero">
+		<h1>Dashboard Administrateur</h1>
+		<p>Acces rapide aux espaces de gestion.</p>
+	</section>
+
+	<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+		<section style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 16px; padding: 20px;">
+			<h2 style="margin: 0 0 8px; font-size: 1.2rem;">Necessaire</h2>
+			<p style="margin: 0 0 16px; color: #6b7280;">Acces direct a la gestion des necessaires.</p>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<a href="{{ path('app_necessaire_index') }}" class="btn btn-outline-primary">Consulter les necessaires</a>
+			</div>
+		</section>
+
+		<section style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 16px; padding: 20px;">
+			<h2 style="margin: 0 0 8px; font-size: 1.2rem;">Produit</h2>
+			<p style="margin: 0 0 16px; color: #6b7280;">Acces direct aux ecrans produits et dosage.</p>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<a href="{{ path('app_produit_index') }}" class="btn btn-outline-primary">Produits</a>
+				<a href="{{ path('app_meo_produit_index') }}" class="btn btn-outline-primary">Meo produit</a>
+				<a href="{{ path('app_moyen_dosage_index') }}" class="btn btn-outline-primary">Moyen dosage</a>
+				<a href="{{ path('app_contenant_index') }}" class="btn btn-outline-primary">Contenants</a>
+				<a href="{{ path('app_temps_contact_index') }}" class="btn btn-outline-primary">Temps contact</a>
+			</div>
+		</section>
+
+		<section style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 16px; padding: 20px;">
+			<h2 style="margin: 0 0 8px; font-size: 1.2rem;">Intervention</h2>
+			<p style="margin: 0 0 16px; color: #6b7280;">Acces direct a la gestion des interventions.</p>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<a href="{{ path('app_intervention_index') }}" class="btn btn-outline-primary">Interventions</a>
+				<a href="{{ path('app_element_securite_index') }}" class="btn btn-outline-primary">Element securite</a>
+			</div>
+		</section>
+
+		<section style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 16px; padding: 20px;">
+			<h2 style="margin: 0 0 8px; font-size: 1.2rem;">Client</h2>
+			<p style="margin: 0 0 16px; color: #6b7280;">Acces direct aux donnees clients et contrats.</p>
+			<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+				<a href="{{ path('app_client_index') }}" class="btn btn-outline-primary">Clients</a>
+				<a href="{{ path('app_contrat_index') }}" class="btn btn-outline-primary">Contrats</a>
+				<a href="{{ path('app_zones_client_index') }}" class="btn btn-outline-primary">Zones</a>
+				<a href="{{ path('app_support_client_index') }}" class="btn btn-outline-primary">Supports</a>
+			</div>
+		</section>
+	</div>
 {% endblock %}

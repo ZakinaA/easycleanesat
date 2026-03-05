@@ -16,8 +16,8 @@
                 <td>{{ contenant.nom }}</td>
             </tr>
             <tr>
-                <th>VolumeEau</th>
-                <td>{{ contenant.volumeEau }}</td>
+                <th>Volume eau</th>
+                <td>{{ contenant.volumeEau }}{% if contenant.uniteVolume %} {{ contenant.uniteVolume.nom }}{% endif %}</td>
             </tr>
             <tr>
                 <th>Picto</th>
@@ -26,9 +26,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_contenant_index') }}">back to list</a>
+    <a href="{{ path('app_contenant_index') }}" class="btn btn-secondary">Retour a la liste</a>
 
-    <a href="{{ path('app_contenant_edit', {'id': contenant.id}) }}">edit</a>
+    <a href="{{ path('app_contenant_edit', {'id': contenant.id}) }}">Modifier</a>
 
     {{ include('contenant/_delete_form.html.twig') }}
 {% endblock %}

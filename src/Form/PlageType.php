@@ -16,7 +16,7 @@ class PlageType extends AbstractType
     {
         $builder
             ->add('heureDebut')
-            ->add('heurFin')
+            ->add('heureFin')
             ->add('intervention', EntityType::class, [
                 'class' => Intervention::class,
                 'choice_label' => 'id',
