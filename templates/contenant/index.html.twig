@@ -1,18 +1,21 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contenant index{% endblock %}
+{% block title %}Contenants{% endblock %}
 
 {% block body %}
-    <h1>Contenant index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Contenants</h1>
+        <a href="{{ path('app_contenant_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Creer</a>
+    </div>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
                 <th>Nom</th>
-                <th>VolumeEau</th>
+                <th>Volume eau</th>
                 <th>Picto</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,19 +24,19 @@
                 <td>{{ contenant.id }}</td>
                 <td>{{ contenant.nom }}</td>
                 <td>{{ contenant.volumeEau }}</td>
-                <td>{{ contenant.picto }}</td>
                 <td>
-                    <a href="{{ path('app_contenant_show', {'id': contenant.id}) }}">show</a>
-                    <a href="{{ path('app_contenant_edit', {'id': contenant.id}) }}">edit</a>
+                    <img src="{{ asset('PictoContenantPNG/' ~ contenant.id ~ '.png') }}" alt="Pictogramme {{ contenant.nom }}" style="max-height: 40px;">
+                </td>
+                <td>
+                    <a href="{{ path('app_contenant_show', {'id': contenant.id}) }}">Afficher</a>
+                    <a href="{{ path('app_contenant_edit', {'id': contenant.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucun enregistrement trouve</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_contenant_new') }}">Create new</a>
 {% endblock %}

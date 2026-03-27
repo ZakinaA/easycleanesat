@@ -1,12 +1,142 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Support Client
+{% block title %}Ajouter des supports
 {% endblock %}
 
 {% block body %}
-	<h1>Créer un support client</h1>
+	<div class="page-header">
+		<div>
+			<h1>Ajouter des supports</h1>
+			{% if zone %}
+				<p class="text-muted text-sm">Zone :
+					{{ zone.nom }}
+					—
+					{{ zone.sitesClient.nom }}
+					—
+					{{ zone.sitesClient.client.nom }}</p>
+			{% endif %}
+		</div>
+	</div>
 
-	{{ include('support_client/_form.html.twig') }}
+	<div class="form-card">
+		<form method="post" id="support-form" data-turbo="false">
+			<div class="form-row">
+				<label>Rechercher un type de support</label>
+				<input type="text" id="search-type-support" placeholder="Ex: sanitaire, mobilier, surface..." style="width:100%; padding:10px; border:1px solid var(--color-border); border-radius:8px; font-size:0.95rem;">
+			</div>
 
-	<a href="{{ path('app_support_client_index') }}">retour à la liste</a>
+			<div id="selected-supports" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;"></div>
+		</div>
+
+		<div id="results-type-support" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px; margin:20px 0;"></div>
+
+		<div class="form-card" style="border:none; box-shadow:none; padding-top:0;">
+			<div class="form-actions">
+				<button class="btn btn-primary" type="submit" form="support-form">Sauvegarder</button>
+				{% if zone %}
+					<a href="{{ path('app_client_show', {'id': zone.sitesClient.client.id}) }}" class="btn btn-secondary">Annuler</a>
+				{% endif %}
+			</div>
+		</form>
+	</div>
+
+	<script>
+		const searchInput = document.getElementById('search-type-support');
+const resultsContainer = document.getElementById('results-type-support');
+const selectedContainer = document.getElementById('selected-supports');
+const form = document.getElementById('support-form');
+let selectedItems = new Map();
+let searchTimeout;
+
+searchInput.addEventListener('input', function () {
+clearTimeout(searchTimeout);
+const query = this.value.trim();
+
+if (query.length < 2) {
+resultsContainer.innerHTML = '';
+return;
+}
+
+searchTimeout = setTimeout(() => {
+fetch('{{ path('api_type_support_search') }}?q=' + encodeURIComponent(query)).then(response => response.json()).then(data => {
+resultsContainer.innerHTML = '';
+data.forEach(item => {
+const card = document.createElement('div');
+const isSelected = selectedItems.has(String(item.id));
+card.style.cssText = 'padding:10px 14px; background:' + (
+isSelected ? '#dbe8f4' : 'var(--color-surface)'
+) + '; border:2px solid ' + (
+isSelected ? 'var(--color-primary)' : 'var(--color-border)'
+) + '; border-radius:8px; cursor:pointer; transition:all 0.2s; text-align:center;';
+card.innerHTML = '<strong style="color:var(--color-primary); font-size:0.9rem;">' + item.nom + '</strong>' + (
+item.description ? '<br><span style="color:var(--color-text-secondary); font-size:0.75rem;">' + item.description + '</span>' : ''
+);
+
+card.addEventListener('click', () => {
+toggleSupport(item.id, item.nom, card);
+});
+
+card.addEventListener('mouseenter', () => {
+if (! selectedItems.has(String(item.id))) 
+card.style.borderColor = 'var(--color-primary)';
+
+});
+card.addEventListener('mouseleave', () => {
+if (! selectedItems.has(String(item.id))) 
+card.style.borderColor = 'var(--color-border)';
+
+});
+
+resultsContainer.appendChild(card);
+});
+
+if (data.length === 0) {
+resultsContainer.innerHTML = '<p style="color:var(--color-text-secondary);">Aucun type trouvé</p>';
+}
+});
+}, 300);
+});
+
+function toggleSupport(id, nom, card) {
+const strId = String(id);
+if (selectedItems.has(strId)) {
+selectedItems.delete(strId);
+card.style.borderColor = 'var(--color-border)';
+card.style.background = 'var(--color-surface)';
+} else {
+selectedItems.set(strId, nom);
+card.style.borderColor = 'var(--color-primary)';
+card.style.background = '#dbe8f4';
+} updateSelectedDisplay();
+}
+
+function updateSelectedDisplay() {
+selectedContainer.innerHTML = '';
+form.querySelectorAll('input[name="selected_supports[]"]').forEach(i => i.remove());
+
+selectedItems.forEach((nom, id) => {
+const hidden = document.createElement('input');
+hidden.type = 'hidden';
+hidden.name = 'selected_supports[]';
+hidden.value = id;
+form.appendChild(hidden);
+
+const badge = document.createElement('div');
+badge.style.cssText = 'display:inline-flex; align-items:center; gap:6px; padding:6px 12px; background:#dbe8f4; border:2px solid var(--color-primary); border-radius:8px;';
+badge.innerHTML = '<strong style="color:var(--color-primary); font-size:0.85rem;">' + nom + '</strong>' + '<button type="button" style="background:none; border:none; color:var(--color-text-secondary); cursor:pointer; font-size:0.9rem;" data-id="' + id + '">✕</button>';
+
+badge.querySelector('button').addEventListener('click', function () {
+removeSupport(this.dataset.id);
+});
+
+selectedContainer.appendChild(badge);
+});
+}
+
+function removeSupport(id) {
+selectedItems.delete(String(id));
+updateSelectedDisplay();
+searchInput.dispatchEvent(new Event('input'));
+}
+	</script>
 {% endblock %}

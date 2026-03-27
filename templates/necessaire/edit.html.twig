@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit Necessaire{% endblock %}
+{% block title %}Modifier Necessaire{% endblock %}
 
 {% block body %}
-    <h1>Edit Necessaire</h1>
+    <h1>Modifier Necessaire</h1>
 
-    {{ include('necessaire/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('necessaire/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
 
-    <a href="{{ path('app_necessaire_index') }}">back to list</a>
+    <a href="{{ path('app_necessaire_index') }}">Retour a la liste</a>
 
     {{ include('necessaire/_delete_form.html.twig') }}
 {% endblock %}

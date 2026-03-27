@@ -50,7 +50,14 @@
 			<p class="text-muted text-sm">Aucun support pour cette zone</p>
 		{% endif %}
 	</div>
-
+    {{ include('zones_client/_delete_form.html.twig') }}
+    
+    <section class="dashboard-actions">
+    <a class="dashboard-action" href="{{ path('app_intervention_new', {'zones_client_id': zones_client.id}) }}">
+        <strong>Ajouter une intervention</strong>
+        <span>Créer une nouvelle intervention pour {{ zones_client.sitesClient.client.nom }}, sur le site {{ zones_client.sitesClient.nom }} dans la zone {{ zones_client.nom }}{% if zones_client.sitesClient.contrats|length > 0 %} pour le contrat {{ zones_client.sitesClient.contrats.first.numero }}{% endif %}.</span>
+    </a>
+    </section>
 	<div class="btn-group mt-3">
 		<a href="{{ path('app_client_show', {'id': zones_client.sitesClient.client.id}) }}" class="btn btn-secondary">← Retour au client</a>
 		{{ include('zones_client/_delete_form.html.twig') }}

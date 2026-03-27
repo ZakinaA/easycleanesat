@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}MeoProduit index{% endblock %}
+
+{% block body %}
+    <h1>Liste des mise en oeuvre produit - Désactivées</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_meo_produit_new') }}" class="btn btn-success btn-lg">+ Créer une nouvelle mise en œuvre</a>
+        <a href="{{ path('app_meo_produit_index') }}" class="btn btn-success">Retour aux mises en œuvre actives</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Code Meo produit</td>
+                <th>Nom produit</th>
+                <th>Nom contenant</th>
+                <th>Nom moyen dilution</th>
+                <th>Volume de Produit</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for meo_produit in meo_produits %}
+            <tr>
+                <td>{{ meo_produit.id }}</td>
+                <td>
+                {{
+                    (meo_produit.produit ? meo_produit.produit.code : '')
+                    ~ '.0' ~
+                    (meo_produit.contenant ? meo_produit.contenant.id : '0')
+                    ~ '.' ~
+                    (meo_produit.moyenDosage ? meo_produit.moyenDosage.code : '00')
+                }}
+                </td>
+                <td>{{ meo_produit.produit ? meo_produit.produit.nom : '-' }}</td>
+                <td>{{ meo_produit.contenant ? meo_produit.contenant.nom : '-' }}</td>
+                <td>{{ meo_produit.moyenDosage ? meo_produit.moyenDosage.nom : '-' }}</td>
+                <td>{{ meo_produit.volumeProduit }}</td>
+                <td>
+                    <a href="{{ path('app_meo_produit_show', {'id': meo_produit.id}) }}">Afficher</a>
+                    <a href="{{ path('app_meo_produit_edit', {'id': meo_produit.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

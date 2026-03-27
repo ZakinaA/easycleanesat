@@ -1,4 +1,4 @@
-{{ form_start(form, {'attr': {'id': 'meoForm'}}) }}
+﻿{{ form_start(form, {'attr': {'id': 'meoForm'}}) }}
     {% if meo_produit.produit %}
         <div class="form-group">
             <label>Nom du produit</label>
@@ -6,5 +6,5 @@
         </div>
     {% endif %}
     {{ form_widget(form) }}
-    <button type="submit" class="btn btn-primary" onclick="return confirm('Ce n\'est pas une bonne pratique. Voulez-vous continuer ?');">{{ button_label|default('Save') }}</button>
+    <button type="submit" class="btn btn-primary" onclick="return confirm('Ce n\'est pas une bonne pratique. Voulez-vous continuer ?');">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

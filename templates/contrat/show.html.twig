@@ -32,9 +32,9 @@
 			</div>
 
 			<h3>Supports</h3>
-			{% if zone.supportClients|length > 0 %}
+			{% if zone.supportsClient|length > 0 %}
 				<ul class="info-list">
-					{% for support in zone.supportClients %}
+					{% for support in zone.supportsClient %}
 						<li>
 							<span class="info-label">Support :</span>
 							<span>{{ support.typeSupport.nom }}</span>

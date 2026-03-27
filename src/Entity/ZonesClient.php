@@ -28,7 +28,7 @@ class ZonesClient
      * @var Collection<int, SupportClient>
      */
     #[ORM\OneToMany(targetEntity: SupportClient::class, mappedBy: 'zonesClient')]
-    private Collection $supportClients;
+    private Collection $supportsClient;
 
     /**
      * @var Collection<int, Intervention>
@@ -97,19 +97,16 @@ class ZonesClient
             $this->supportClients->add($supportClient);
             $supportClient->setZonesClient($this);
         }
-
         return $this;
     }
 
     public function removeSupportClient(SupportClient $supportClient): static
     {
-        if ($this->supportClients->removeElement($s)) {
-            // set the owning side to null (unless already changed)
+        if ($this->supportClients->removeElement($supportClient)) {
             if ($supportClient->getZonesClient() === $this) {
                 $supportClient->setZonesClient(null);
             }
         }
-
         return $this;
     }
 

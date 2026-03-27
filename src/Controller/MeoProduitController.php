@@ -18,7 +18,15 @@ final class MeoProduitController extends AbstractController
     public function index(MeoProduitRepository $meoProduitRepository): Response
     {
         return $this->render('meo_produit/index.html.twig', [
-            'meo_produits' => $meoProduitRepository->findAll(),
+            'meo_produits' => $meoProduitRepository->findAllActif(),
+        ]);
+    }
+
+    #[Route('/inactif', name: 'app_meo_produit_inactif', methods: ['GET'])]
+    public function indexInactif(MeoProduitRepository $meoProduitRepository): Response
+    {
+        return $this->render('meo_produit/index_inactif.html.twig', [
+            'meo_produits' => $meoProduitRepository->findAllInactif(),
         ]);
     }
 
@@ -77,5 +85,16 @@ final class MeoProduitController extends AbstractController
         }
 
         return $this->redirectToRoute('app_meo_produit_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/toggle-actif', name: 'app_meo_produit_toggle_actif', methods: ['POST'])]
+    public function toggleActif(Request $request, MeoProduit $meoProduit, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle_actif'.$meoProduit->getId(), $request->getPayload()->getString('_token'))) {
+            $meoProduit->setActif(!$meoProduit->isActif());
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_meo_produit_show', ['id' => $meoProduit->getId()], Response::HTTP_SEE_OTHER);
     }
 }

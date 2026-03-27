@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}JourDeLaSemaine{% endblock %}
 
@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_jour_de_la_semaine_index') }}">back to list</a>
+    <a href="{{ path('app_jour_de_la_semaine_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_jour_de_la_semaine_edit', {'id': jour_de_la_semaine.id}) }}">edit</a>
+    <a href="{{ path('app_jour_de_la_semaine_edit', {'id': jour_de_la_semaine.id}) }}">Modifier</a>
 
     {{ include('jour_de_la_semaine/_delete_form.html.twig') }}
 {% endblock %}

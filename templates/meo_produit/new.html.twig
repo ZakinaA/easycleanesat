@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New MeoProduit{% endblock %}
+{% block title %}Créer une mise en oeuvre{% endblock %}
 
 {% block body %}
-    <h1>Create new MeoProduit</h1>
+    <h1>Créer une nouvelle mise en oeuvre produit</h1>
 
-    {{ include('meo_produit/_form.html.twig') }}
+    {{ include('meo_produit/_form.html.twig', {'button_label': 'Sauvegarder'}) }}
 
-    <a href="{{ path('app_meo_produit_index') }}">back to list</a>
+    <a href="{{ path('app_meo_produit_index') }}">Retour à la liste</a>
 {% endblock %}

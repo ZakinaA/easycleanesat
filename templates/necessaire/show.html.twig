@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Necessaire{% endblock %}
 
@@ -26,9 +26,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_necessaire_index') }}">back to list</a>
+    <a href="{{ path('app_necessaire_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_necessaire_edit', {'id': necessaire.id}) }}">edit</a>
+    <a href="{{ path('app_necessaire_edit', {'id': necessaire.id}) }}">Modifier</a>
 
     {{ include('necessaire/_delete_form.html.twig') }}
 {% endblock %}

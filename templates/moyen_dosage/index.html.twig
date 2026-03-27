@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}MoyenDosage index{% endblock %}
+{% block title %}Moyens de dosage{% endblock %}
 
 {% block body %}
-    <h1>MoyenDosage index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Moyens de dosage</h1>
+        <a href="{{ path('app_moyen_dosage_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Creer</a>
+    </div>
 
     <table class="table">
         <thead>
@@ -12,7 +15,7 @@
                 <th>Nom</th>
                 <th>Code</th>
                 <th>Picto</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -21,19 +24,31 @@
                 <td>{{ moyen_dosage.id }}</td>
                 <td>{{ moyen_dosage.nom }}</td>
                 <td>{{ moyen_dosage.code }}</td>
-                <td>{{ moyen_dosage.picto }}</td>
                 <td>
-                    <a href="{{ path('app_moyen_dosage_show', {'id': moyen_dosage.id}) }}">show</a>
-                    <a href="{{ path('app_moyen_dosage_edit', {'id': moyen_dosage.id}) }}">edit</a>
+                    <img src="{{ asset('PictoMoyenDosagePNG/' ~ moyen_dosage.id ~ '.png') }}" alt="Pictogramme {{ moyen_dosage.nom }}" style="max-height: 40px;">
+                </td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="{{ path('app_moyen_dosage_show', {'id': moyen_dosage.id}) }}" class="btn btn-sm btn-outline-secondary" title="Afficher" aria-label="Afficher">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13.1 13.1 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13.1 13.1 0 0 1 14.828 8a13.1 13.1 0 0 1-1.66 2.043C11.879 11.332 10.12 12.5 8 12.5s-3.879-1.168-5.168-2.457A13.1 13.1 0 0 1 1.172 8z"/>
+                                <path d="M8 5.5A2.5 2.5 0 1 0 8 10.5A2.5 2.5 0 0 0 8 5.5m0 1A1.5 1.5 0 1 1 8 9.5A1.5 1.5 0 0 1 8 6.5"/>
+                            </svg>
+                        </a>
+                        <a href="{{ path('app_moyen_dosage_edit', {'id': moyen_dosage.id}) }}" class="btn btn-sm btn-outline-primary" title="Modifier" aria-label="Modifier">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492a3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0a2.246 2.246 0 0 1-4.492 0"/>
+                                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.87.87 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.87.87 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.87.87 0 0 1 .52 1.255l-.16.292c-.892 1.64.902 3.433 2.541 2.54l.292-.159a.87.87 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.87.87 0 0 1 1.255-.52l.292.16c1.64.892 3.433-.902 2.54-2.541l-.159-.292a.87.87 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.87.87 0 0 1-.52-1.255l.16-.292c.892-1.64-.902-3.433-2.541-2.54l-.292.159a.87.87 0 0 1-1.255-.52zM7.163 2.06c.204-.694 1.47-.694 1.674 0l.094.319a1.87 1.87 0 0 0 2.693 1.115l.292-.16c.636-.346 1.33.347.984.984l-.16.292a1.87 1.87 0 0 0 1.116 2.693l.319.094c.694.204.694 1.47 0 1.674l-.319.094a1.87 1.87 0 0 0-1.115 2.693l.16.292c.346.636-.348 1.33-.985.984l-.292-.16a1.87 1.87 0 0 0-2.693 1.116l-.094.319c-.204.694-1.47.694-1.674 0l-.094-.319a1.87 1.87 0 0 0-2.693-1.115l-.292.16c-.636.345-1.33-.348-.984-.985l.16-.292a1.87 1.87 0 0 0-1.116-2.693l-.319-.094c-.694-.204-.694-1.47 0-1.674l.319-.094A1.87 1.87 0 0 0 3.26 4.61l-.16-.292c-.345-.636.348-1.33.985-.984l.292.16a1.87 1.87 0 0 0 2.693-1.116z"/>
+                            </svg>
+                        </a>
+                    </div>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucun enregistrement trouve</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_moyen_dosage_new') }}">Create new</a>
 {% endblock %}

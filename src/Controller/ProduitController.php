@@ -18,14 +18,23 @@ final class ProduitController extends AbstractController
     public function index(ProduitRepository $produitRepository): Response
     {
         return $this->render('produit/index.html.twig', [
-            'produits' => $produitRepository->findAll(),
+            'produits' => $produitRepository->findAllActif(),
+        ]);
+    }
+
+    #[Route('/inactif', name: 'app_produit_inactif', methods: ['GET'])]
+    public function indexInactif(ProduitRepository $produitRepository): Response
+    {
+        return $this->render('produit/index_inactif.html.twig', [
+            'produits' => $produitRepository->findAllInactif(),
         ]);
     }
 
     #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): Response
     {
         $produit = new Produit();
+        $produit->setCode($produitRepository->getNextCode());
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
@@ -77,5 +86,16 @@ final class ProduitController extends AbstractController
         }
 
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/toggle-actif', name: 'app_produit_toggle_actif', methods: ['POST'])]
+    public function toggleActif(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle_actif'.$produit->getId(), $request->getPayload()->getString('_token'))) {
+            $produit->setActif(!$produit->isActif());
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_produit_show', ['id' => $produit->getId()], Response::HTTP_SEE_OTHER);
     }
 }

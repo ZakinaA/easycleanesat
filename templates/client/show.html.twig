@@ -69,6 +69,18 @@
 		</div>
 	{% endfor %}
 
+    <hr>
+    <a href="{{ path('app_client_index') }}">Retour à la liste des clients</a>
+    </br>
+    <a href="{{ path('app_client_edit', {'id': client.id}) }}">Modifier</a>
+    {{ include('client/_delete_form.html.twig') }}
+    
+    <section class="dashboard-actions">
+    <a class="dashboard-action" href="{{ path('app_intervention_new', {'client_id': client.id}) }}">
+        <strong>Ajouter une intervention</strong>
+        <span>Créer une nouvelle intervention pour {{ client.nom }}.</span>
+    </a>
+    </section>
 	<div class="btn-group mt-3">
 		<a href="{{ path('app_client_index') }}" class="btn btn-secondary">← Retour à la liste</a>
 		{% if app.user and is_granted('ROLE_ADMIN') %}

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Actions index{% endblock %}
 
@@ -11,7 +11,7 @@
                 <th>Id</th>
                 <th>Tache</th>
                 <th>Support</th>
-                <th>Matériel</th>
+                <th>MatÃ©riel</th>
                 <th>Reutilisable</th>
                 <th>Accessoire</th>
                 <th>Consommable</th>
@@ -34,8 +34,8 @@
                 <td>{{action.meoProduit.contenant ? action.meoProduit.contenant.id : '0'}}</td>
                 <td>{{action.meoProduit.moyenDosage ? action.meoProduit.moyenDosage.code : '0'}}</td>
                 <td>
-                    <a href="{{ path('app_actions_show', {'id': action.id}) }}">show</a>
-                    <a href="{{ path('app_actions_edit', {'id': action.id}) }}">edit</a>
+                    <a href="{{ path('app_actions_show', {'id': action.id}) }}">Afficher</a>
+                    <a href="{{ path('app_actions_edit', {'id': action.id}) }}">Modifier</a>
                 </td>
 
             </tr>
@@ -47,5 +47,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_actions_new') }}">Create new</a>
+    <a href="{{ path('app_actions_new') }}">Creer</a>
 {% endblock %}

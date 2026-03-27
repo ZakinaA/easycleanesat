@@ -8,7 +8,20 @@
 		<h1>Dashboard</h1>
 		<p>Acces rapide aux actions principales de l'application</p>
 	</section>
-
+    <section class="dashboard-actions">
+        <a class="dashboard-action" href="{{ path('app_client_index') }}">
+            <strong>Liste des clients</strong>
+            <span>Consulter et gerer les utilisateurs.</span>
+        </a>
+        <a class="dashboard-action" href="{{ path('app_intervention_new') }}">
+            <strong>Ajouter une intervention</strong>
+            <span>Créer une nouvelle intervention.</span>
+        </a>
+        <a class="dashboard-action" href="/easycleanesat/public/login">
+            <strong>Connexion admin</strong>
+            <span>Acceder aux modifications d'administration.</span>
+        </a>
+    </section>
 	<section class="dashboard-actions">
 		<a class="dashboard-action" href="{{ path('app_client_index') }}">
 			<strong>Liste des clients</strong>

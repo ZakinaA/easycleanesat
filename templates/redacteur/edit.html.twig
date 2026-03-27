@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit Redacteur{% endblock %}
+{% block title %}Modifier Redacteur{% endblock %}
 
 {% block body %}
-    <h1>Edit Redacteur</h1>
+    <h1>Modifier Redacteur</h1>
 
-    {{ include('redacteur/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('redacteur/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
 
-    <a href="{{ path('app_redacteur_index') }}">back to list</a>
+    <a href="{{ path('app_redacteur_index') }}">Retour a la liste</a>
 
     {{ include('redacteur/_delete_form.html.twig') }}
 {% endblock %}

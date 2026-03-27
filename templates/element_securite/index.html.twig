@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}ElementSecurite index{% endblock %}
 
@@ -21,8 +21,8 @@
                 <td>{{ element_securite.nom }}</td>
                 <td>{{ element_securite.picto }}</td>
                 <td>
-                    <a href="{{ path('app_element_securite_show', {'id': element_securite.id}) }}">show</a>
-                    <a href="{{ path('app_element_securite_edit', {'id': element_securite.id}) }}">edit</a>
+                    <a href="{{ path('app_element_securite_show', {'id': element_securite.id}) }}">Afficher</a>
+                    <a href="{{ path('app_element_securite_edit', {'id': element_securite.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -33,5 +33,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_element_securite_new') }}">Create new</a>
+    <a href="{{ path('app_element_securite_new') }}">Creer</a>
 {% endblock %}
