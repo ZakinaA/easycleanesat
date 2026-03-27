@@ -18,7 +18,7 @@ class Plage
     private ?\DateTime $heureDebut = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $heurFin = null;
+    private ?\DateTime $heureFin = null;
 
     #[ORM\ManyToOne(inversedBy: 'plages')]
     private ?Intervention $intervention = null;
@@ -43,14 +43,14 @@ class Plage
         return $this;
     }
 
-    public function getHeurFin(): ?\DateTime
+    public function getHeureFin(): ?\DateTime
     {
-        return $this->heurFin;
+        return $this->heureFin;
     }
 
-    public function setHeurFin(\DateTime $heurFin): static
+    public function setHeureFin(\DateTime $heureFin): static
     {
-        $this->heurFin = $heurFin;
+        $this->heureFin = $heureFin;
 
         return $this;
     }

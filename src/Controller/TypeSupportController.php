@@ -33,6 +33,18 @@ final class TypeSupportController extends AbstractController
             $entityManager->persist($typeSupport);
             $entityManager->flush();
 
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoTypeSupportPNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $typeSupport->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $typeSupport->setPicto($pictoFileName);
+                $entityManager->flush();
+            }
+
             return $this->redirectToRoute('app_type_support_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -57,8 +69,17 @@ final class TypeSupportController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoTypeSupportPNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $typeSupport->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $typeSupport->setPicto($pictoFileName);
+            }
             $entityManager->flush();
-
             return $this->redirectToRoute('app_type_support_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -71,11 +92,10 @@ final class TypeSupportController extends AbstractController
     #[Route('/{id}', name: 'app_type_support_delete', methods: ['POST'])]
     public function delete(Request $request, TypeSupport $typeSupport, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$typeSupport->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $typeSupport->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($typeSupport);
             $entityManager->flush();
         }
-
         return $this->redirectToRoute('app_type_support_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -1,10 +1,26 @@
-{{ form_start(form, {'attr': {'id': 'meoForm'}}) }}
+﻿{{ form_start(form, {'attr': {'id': 'meoForm'}}) }}
     {% if meo_produit.produit %}
         <div class="form-group">
             <label>Nom du produit</label>
             <p>{{ meo_produit.produit.nom }}</p>
         </div>
     {% endif %}
-    {{ form_widget(form) }}
-    <button type="submit" class="btn btn-primary" onclick="return confirm('Ce n\'est pas une bonne pratique. Voulez-vous continuer ?');">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+    {{ form_row(form.produit) }}
+    {{ form_row(form.contenant) }}
+    <div class="mb-3" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: nowrap;">
+        <div style="flex: 1 1 auto;">
+            {{ form_label(form.volumeProduit) }}
+            {{ form_widget(form.volumeProduit) }}
+            {{ form_errors(form.volumeProduit) }}
+        </div>
+        <div style="flex: 0 0 220px;">
+            {{ form_label(form.uniteVolume) }}
+            {{ form_widget(form.uniteVolume) }}
+            {{ form_errors(form.uniteVolume) }}
+        </div>
+    </div>
+    {{ form_row(form.moyenDosage) }}
+    {{ form_row(form.tempsContact) }}
+    {{ form_rest(form) }}
+    <button type="submit" class="btn btn-primary" onclick="return confirm('Ce n\'est pas une bonne pratique. Voulez-vous continuer ?');">{{ button_label|default('Enregistrer') }}</button>
+{{ form_end(form, {'render_rest': false}) }}

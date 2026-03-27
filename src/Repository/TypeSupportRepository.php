@@ -6,9 +6,6 @@ use App\Entity\TypeSupport;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<TypeSupport>
- */
 class TypeSupportRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +13,11 @@ class TypeSupportRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeSupport::class);
     }
 
-    //    /**
-    //     * @return TypeSupport[] Returns an array of TypeSupport objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?TypeSupport
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function searchByNomOrDescription(string $query): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT * FROM type_support WHERE nom LIKE :q OR description LIKE :q ORDER BY nom ASC';
+        $result = $conn->executeQuery($sql, ['q' => '%' . $query . '%']);
+        return $result->fetchAllAssociative();
+    }
 }

@@ -1,13 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit TempsContact{% endblock %}
+{% block title %}Modifier Temps de contact{% endblock %}
 
 {% block body %}
-    <h1>Edit TempsContact</h1>
+    <h1>Modifier Temps de contact</h1>
 
-    {{ include('temps_contact/_form.html.twig', {'button_label': 'Update'}) }}
+    <p><strong>Picto actuel :</strong> {{ temps_contact.picto ?: '-' }}</p>
 
-    <a href="{{ path('app_temps_contact_index') }}">back to list</a>
+    {{ include('temps_contact/_form.html.twig', {
+        'button_label': 'Mettre a jour',
+        'hide_picto': true
+    }) }}
+
+    <a href="{{ path('app_temps_contact_index') }}">Retour a la liste</a>
 
     {{ include('temps_contact/_delete_form.html.twig') }}
 {% endblock %}

@@ -1,13 +1,60 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit Intervention{% endblock %}
+{% block title %}Modifier Intervention{% endblock %}
 
 {% block body %}
-    <h1>Edit Intervention</h1>
+    <h1>Modifier Intervention</h1>
 
-    {{ include('intervention/_form.html.twig', {'button_label': 'Update'}) }}
+    <div class="intervention-header">
+        <div class="intervention-header-item">
+            <span class="intervention-header-label">Client</span>
+            <span class="intervention-header-value">{{ intervention.zonesClient ? intervention.zonesClient.sitesClient.client.nom : '-' }}</span>
+        </div>
+        <div class="intervention-header-item">
+            <span class="intervention-header-label">Site</span>
+            <span class="intervention-header-value">{{ intervention.zonesClient ? intervention.zonesClient.sitesClient.nom : '-' }}</span>
+        </div>
+        <div class="intervention-header-item">
+            <span class="intervention-header-label">Contrat</span>
+            <span class="intervention-header-value">{{ intervention.contrat ? intervention.contrat.numero : '-' }}</span>
+        </div>
+        <div class="intervention-header-item">
+            <span class="intervention-header-label">Zone</span>
+            <span class="intervention-header-value">{{ intervention.zonesClient ? intervention.zonesClient.nom : '-' }}</span>
+        </div>
+    </div>
 
-    <a href="{{ path('app_intervention_index') }}">back to list</a>
+    <style>
+    .intervention-header {
+        display: flex;
+        gap: 2rem;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .intervention-header-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .intervention-header-label {
+        font-size: 0.75em;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+    }
+    .intervention-header-value {
+        font-weight: bold;
+        font-size: 1em;
+        color: #333;
+    }
+    </style>
+
+    {{ include('intervention/_form.html.twig', {'button_label': 'Mettre a jour', 'is_edit': true}) }}
+
+    <a href="{{ path('app_intervention_index') }}">Retour a la liste</a>
 
     {{ include('intervention/_delete_form.html.twig') }}
 {% endblock %}

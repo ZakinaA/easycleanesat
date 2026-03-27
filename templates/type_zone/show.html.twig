@@ -1,25 +1,31 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Type de zone
+{% block title %}
+	{{ type_zone.nom }}
 {% endblock %}
-
 {% block body %}
-	<h1>Type de zone</h1>
-
-	<p>
-		<strong>Nom :</strong>
-		{{ type_zone.nom }}</p>
-	<p>
-		<strong>Pictogramme :</strong>
-	</p>
-	{% if type_zone.picto %}
-		<img src="{{ asset('uploads/pictos/' ~ type_zone.picto) }}" alt="{{ type_zone.nom }}" width="100">
-	{% else %}
-		<p>Aucun pictogramme</p>
-	{% endif %}
-
-	<hr>
-	<a href="{{ path('app_type_zone_index') }}">Retour à la liste</a>
-	<a href="{{ path('app_type_zone_edit', {'id': type_zone.id}) }}">Modifier</a>
-	{{ include('type_zone/_delete_form.html.twig') }}
+	<div class="page-header">
+		<h1>{{ type_zone.nom }}</h1>
+	</div>
+	<div class="card">
+		<div style="display: flex; align-items: center; gap: 20px;">
+			{% if type_zone.picto %}
+				<img src="{{ asset('PictoTypeZonePNG/' ~ type_zone.picto) }}" alt="{{ type_zone.nom }}" style="max-height: 100px;">
+			{% endif %}
+			<ul class="info-list" style="flex:1;">
+				<li>
+					<span class="info-label">Nom :</span>
+					<span>{{ type_zone.nom }}</span>
+				</li>
+				<li>
+					<span class="info-label">Description :</span>
+					<span>{{ type_zone.description ?? 'Aucune' }}</span>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div class="btn-group mt-3">
+		<a href="{{ path('app_type_zone_index') }}" class="btn btn-secondary">Retour a la liste</a>
+		<a href="{{ path('app_type_zone_edit', {'id': type_zone.id}) }}" class="btn btn-secondary">Modifier</a>
+		{{ include('type_zone/_delete_form.html.twig') }}
+	</div>
 {% endblock %}

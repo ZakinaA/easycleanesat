@@ -24,16 +24,19 @@ class Actions
     #[ORM\ManyToMany(targetEntity: Necessaire::class, inversedBy: 'actions')]
     private Collection $necessaire;
 
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    private ?bool $actif = true;
+
     /**
-     * @var Collection<int, Intervention>
+     * @var Collection<int, SuppInter>
      */
-    #[ORM\ManyToMany(targetEntity: Intervention::class, inversedBy: 'actions')]
-    private Collection $intervention;
+    #[ORM\ManyToMany(targetEntity: SuppInter::class, mappedBy: 'actions')]
+    private Collection $suppInters;
 
     public function __construct()
     {
         $this->necessaire = new ArrayCollection();
-        $this->intervention = new ArrayCollection();
+        $this->suppInters = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,26 +80,41 @@ class Actions
         return $this;
     }
 
-    /**
-     * @return Collection<int, Intervention>
-     */
-    public function getIntervention(): Collection
+    public function isActif(): ?bool
     {
-        return $this->intervention;
+        return $this->actif;
     }
 
-    public function addIntervention(Intervention $intervention): static
+    public function setActif(bool $actif): static
     {
-        if (!$this->intervention->contains($intervention)) {
-            $this->intervention->add($intervention);
+        $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, SuppInter>
+     */
+    public function getSuppInters(): Collection
+    {
+        return $this->suppInters;
+    }
+
+    public function addSuppInter(SuppInter $suppInter): static
+    {
+        if (!$this->suppInters->contains($suppInter)) {
+            $this->suppInters->add($suppInter);
+            $suppInter->addAction($this);
         }
 
         return $this;
     }
 
-    public function removeIntervention(Intervention $intervention): static
+    public function removeSuppInter(SuppInter $suppInter): static
     {
-        $this->intervention->removeElement($intervention);
+        if ($this->suppInters->removeElement($suppInter)) {
+            $suppInter->removeAction($this);
+        }
 
         return $this;
     }

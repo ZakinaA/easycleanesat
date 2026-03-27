@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Redacteur{% endblock %}
 
@@ -18,9 +18,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_redacteur_index') }}">back to list</a>
+    <a href="{{ path('app_redacteur_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_redacteur_edit', {'id': redacteur.id}) }}">edit</a>
+    <a href="{{ path('app_redacteur_edit', {'id': redacteur.id}) }}">Modifier</a>
 
     {{ include('redacteur/_delete_form.html.twig') }}
 {% endblock %}

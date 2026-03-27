@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit VigilanceIntervention{% endblock %}
+{% block title %}Modifier VigilanceIntervention{% endblock %}
 
 {% block body %}
-    <h1>Edit VigilanceIntervention</h1>
+    <h1>Modifier VigilanceIntervention</h1>
 
-    {{ include('vigilance_intervention/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('vigilance_intervention/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
 
-    <a href="{{ path('app_vigilance_intervention_index') }}">back to list</a>
+    <a href="{{ path('app_vigilance_intervention_index') }}">Retour a la liste</a>
 
     {{ include('vigilance_intervention/_delete_form.html.twig') }}
 {% endblock %}

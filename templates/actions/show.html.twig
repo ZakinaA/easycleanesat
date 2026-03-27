@@ -3,7 +3,7 @@
 {% block title %}Action #{{ action.id }}{% endblock %}
 
 {% block body %}
-    <h1>Détails de l'Action #{{ action.id }}</h1>
+    <h1>Détails de l'Action #{{ action.id }} {{ include('actions/_deactivate_form.html.twig') }}</h1>
 
     <div class="card mb-3">
         <div class="card-header">

@@ -1,85 +1,163 @@
 <style>
+    /* Layout principal avec table pour garantir l'alignement */
+    .action-form-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 20px 0;
+    }
+    
+    .action-form-table td {
+        vertical-align: top;
+    }
+    
+    .action-form-left {
+        width: 78%;
+    }
+    
+    .action-form-right {
+        width: 20%;
+        max-width: 400px;
+    }
+    
+    /* Nécessaires Grid */
     .necessaire-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
     }
+    
     .necessaire-bloc {
         border: 1px solid #dee2e6;
         border-radius: 5px;
         padding: 10px;
         background-color: #f8f9fa;
     }
+    
     .necessaire-bloc h6 {
         margin-bottom: 10px;
         padding-bottom: 5px;
         border-bottom: 2px solid #007bff;
         font-weight: bold;
-    }
-    .necessaire-search {
-        width: 100%;
-        padding: 5px 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ced4da;
-        border-radius: 3px;
         font-size: 0.9rem;
     }
+    
+    .necessaire-search {
+        width: 100%;
+        padding: 5px 8px;
+        margin-bottom: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 3px;
+        font-size: 0.85rem;
+    }
+    
     .necessaire-list {
-        max-height: 300px;
+        max-height: 250px;
         overflow-y: auto;
         padding: 5px;
     }
+    
     .necessaire-list .form-check {
         margin-bottom: 0;
-        padding: 8px 0;
+        padding: 6px 0;
         padding-left: 0;
         display: flex;
         align-items: center;
         border-bottom: 1px solid #dee2e6;
     }
+    
     .necessaire-list .form-check:last-child {
         border-bottom: none;
     }
+    
     .necessaire-list .form-check-input {
         margin-top: 0;
         margin-right: 8px;
         flex-shrink: 0;
     }
+    
     .necessaire-list .form-check-label {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         cursor: pointer;
         margin-bottom: 0;
     }
+    
     .btn-uncheck-all {
-        font-size: 0.8rem;
-        padding: 3px 10px;
-        margin-bottom: 10px;
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        margin-bottom: 8px;
         width: 100%;
     }
-    .alert-warning-custom {
-        background-color: #fff3cd;
-        border: 1px solid #ffc107;
-        color: #856404;
-        padding: 12px 15px;
+    
+    /* Aperçu sticky */
+    .preview-sticky {
+        position: sticky;
+        top: 20px;
+    }
+    
+    .preview-box {
+        border: solid 2px #000;
+        padding: 0;
+        background-color: white;
         border-radius: 5px;
-        margin-bottom: 20px;
-        font-weight: 600;
+        overflow: hidden;
+    }
+    
+    .preview-header {
+        border-bottom: solid 2px #000;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+    
+    .preview-content {
+        display: flex;
+        padding: 8px;
+        min-height: 60px;
+        justify-content: space-between;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+        .action-form-table,
+        .action-form-table tbody,
+        .action-form-table tr {
+            display: block;
+            width: 100%;
+        }
+        
+        .action-form-table td {
+            display: block;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .preview-sticky {
+            position: relative;
+            top: 0;
+            margin-top: 20px;
+        }
+        
+        .necessaire-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
 {{ form_start(form) }}
-    <div class="row">
-        <div class="col-md-12 mb-3">
-            <div class="card">
+
+<table class="action-form-table">
+    <tr>
+        <!-- Colonne Formulaire -->
+        <td class="action-form-left">
+            <!-- Produit et Dosage -->
+            <div class="card mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Produit et Dosage</h5>
                     {{ form_row(form.meo_produit) }}
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-12 mb-3">
-            <div class="card h-100">
+            <!-- Nécessaires -->
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Nécessaires (Équipements requis)</h5>
                     <div class="necessaire-grid">
@@ -107,48 +185,246 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </td>
+        
+        <!-- Colonne Aperçu -->
+        <td class="action-form-right">
+            <div class="preview-sticky">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center mb-3">Aperçu</h5>
+                        <div class="preview-box">
+                            <div class="preview-header">
+                                <div id="preview-tache-nom" style="font-weight: bold; text-align: center; min-height: 20px; margin-bottom: 8px;"></div>
+                                <div id="preview-tache-img" style="width: 80px; height: 80px; margin: 0 auto; display: flex; align-items: center; justify-content: center;"></div>
+                            </div>
+                            <div class="preview-content">
+                                <div id="preview-necessaires" style="display: grid; grid-template-columns: repeat(2, 40px); gap: 2px;"></div>
+                                <div id="preview-meo" style="margin-left: 8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
 
-    <div style="display: none;">
-        {{ form_row(form.intervention) }}
-    </div>
+<div style="display: none;">
+    {{ form_row(form.intervention) }}
+</div>
 
-    <div class="text-center">
-        <button class="btn btn-primary btn-lg">{{ button_label|default('Enregistrer') }}</button>
-    </div>
+<div class="text-center mt-4">
+    <button class="btn btn-primary btn-lg">{{ button_label|default('Enregistrer') }}</button>
+</div>
+
 {{ form_end(form) }}
 
 <script>
-    // Fonction de recherche pour chaque bloc de nécessaires
-    document.querySelectorAll('.necessaire-search').forEach(searchInput => {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const typeId = this.dataset.type;
-            const list = document.querySelector(`.necessaire-list[data-type="${typeId}"]`);
-            const items = list.querySelectorAll('.necessaire-item');
+    // Attendre que le DOM soit complètement chargé
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chemin de base pour les assets
+        const assetBasePath = "{{ asset('PictoNecessairePNG/') }}";
+        const contenantBasePath = "{{ asset('PictoContenantPNG/') }}";
+        const moyenDosageBasePath = "{{ asset('PictoMoyenDosagePNG/') }}";
+        const tempsContactBasePath = "{{ asset('PictoTempContactPNG/') }}";
+
+        // Données des MEO produits
+        const meoProduitsData = {{ meoProduitsData|raw }};
+
+        // Données des nécessaires pour la preview
+        const necessairesData = {};
+        document.querySelectorAll('.necessaire-item').forEach(item => {
+            const checkbox = item.querySelector('input[type="checkbox"]');
+            const label = item.querySelector('label');
+            if (checkbox && label) {
+                const necessaireId = checkbox.value;
+                const typeBloc = item.closest('.necessaire-bloc');
+                const typeId = typeBloc.dataset.typeId;
+                const typeName = typeBloc.querySelector('h6').textContent;
+                const parts = label.textContent.split(' - ');
+                necessairesData[necessaireId] = {
+                    id: necessaireId,
+                    code: parts[0].trim(),
+                    nom: parts[1] ? parts[1].trim() : parts[0].trim(),
+                    typeId: typeId,
+                    typeName: typeName.toLowerCase()
+                };
+            }
+        });
+
+        // Fonction pour mettre à jour la preview du MEO produit
+        function updateMeoPreview() {
+            const meoSelect = document.querySelector('select[id$="_meo_produit"]');
+            const meoDiv = document.getElementById('preview-meo');
             
-            items.forEach(item => {
-                const itemName = item.dataset.name;
-                if (itemName.includes(searchTerm)) {
-                    item.style.display = 'block';
+            if (!meoSelect || !meoDiv) return;
+            
+            const selectedMeoId = meoSelect.value;
+            meoDiv.innerHTML = '';
+            
+            if (selectedMeoId && meoProduitsData[selectedMeoId]) {
+                const meo = meoProduitsData[selectedMeoId];
+                
+                // Map des couleurs
+                const colorMap = {
+                    'vert': '#22c55e', 'green': '#22c55e',
+                    'rouge': '#ef4444', 'red': '#ef4444',
+                    'bleu': '#3b82f6', 'blue': '#3b82f6',
+                    'jaune': '#f4d40b', 'yellow': '#f4d40b',
+                    'orange': '#fb923c',
+                    'violet': '#a855f7', 'purple': '#a855f7',
+                    'rose': '#ec4899', 'pink': '#ec4899',
+                    'noir': '#111827', 'black': '#111827',
+                    'blanc': '#ffffff', 'white': '#ffffff',
+                    'gris': '#9ca3af', 'gray': '#9ca3af', 'grey': '#9ca3af',
+                    'marron': '#92400e', 'brown': '#92400e'
+                };
+                
+                let bgColor = '#ffffff';
+                if (meo.produit && meo.produit.couleur) {
+                    const couleur = meo.produit.couleur.toLowerCase();
+                    if (couleur.startsWith('#')) {
+                        bgColor = couleur;
+                    } else if (colorMap[couleur]) {
+                        bgColor = colorMap[couleur];
+                    }
+                }
+                
+                // Grille 2x2 style index
+                let html = `
+                    <div style="width: 80px; border: 1px solid #4b5563; border-radius: 4px; overflow: hidden; background: #ffffff;">
+                        <!-- Ligne du haut -->
+                        <div style="display: flex;">
+                            <!-- Cellule haut gauche: Contenant + Code produit -->
+                            <div style="width: 50%; padding: 4px; border-right: 1px solid #4b5563; background: ${bgColor}; display: flex; flex-direction: column; justify-content: space-between; align-items: center; min-height: 45px;">
+                                ${meo.contenant && meo.contenant.id ? `<img src="${contenantBasePath}${meo.contenant.id}.png" onerror="this.style.display='none'" style="max-width: 20px; max-height: 20px;">` : ''}
+                                <span style="font-size: 8px; font-weight: 700; text-align: center; color: #111111;">
+                                    ${meo.produit ? meo.produit.code : ''}${meo.moyenDosage ? '.' + meo.moyenDosage.code : ''}
+                                </span>
+                            </div>
+                            <!-- Cellule haut droite: Volume d'eau -->
+                            <div style="width: 50%; padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                <span style="font-size: 7px; color: #6b7280;">Eau</span>
+                                <span style="font-size: 8px; font-weight: 700;">
+                                    ${meo.contenant && meo.contenant.volumeEau ? meo.contenant.volumeEau + (meo.contenant.uniteVolumeEau ? ' ' + meo.contenant.uniteVolumeEau : '') : ''}
+                                </span>
+                            </div>
+                        </div>
+                        <!-- Ligne du bas -->
+                        <div style="display: flex; border-top: 1px solid #4b5563;">
+                            <!-- Cellule bas gauche: Moyen de dosage -->
+                            <div style="width: 50%; padding: 4px; border-right: 1px solid #4b5563; display: flex; align-items: center; justify-content: center; min-height: 35px;">
+                                ${meo.moyenDosage && meo.moyenDosage.id ? `<img src="${moyenDosageBasePath}${meo.moyenDosage.id}.png" onerror="this.style.display='none'" style="max-width: 24px; max-height: 24px;">` : ''}
+                            </div>
+                            <!-- Cellule bas droite: Volume produit + Temps contact -->
+                            <div style="width: 50%; display: flex; flex-direction: column;">
+                                <div style="flex: 1; padding: 4px; display: flex; align-items: center; justify-content: center; text-align: center;">
+                                    <span style="font-size: 8px; font-weight: 700;">
+                                        ${meo.volume ? meo.volume + (meo.uniteVolume ? ' ' + meo.uniteVolume : '') : ''}
+                                    </span>
+                                </div>
+                                <div style="flex: 1; padding: 4px; display: flex; align-items: center; justify-content: center;">
+                                    ${meo.tempsContact && meo.tempsContact.id ? `<img src="${tempsContactBasePath}${meo.tempsContact.id}.png" onerror="this.style.display='none'" style="max-width: 19px; max-height: 19px;">` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                meoDiv.innerHTML = html;
+            }
+        }
+
+        // Fonction pour mettre à jour la preview des nécessaires
+        function updatePreview() {
+            const checked = document.querySelectorAll('.necessaire-item input[type="checkbox"]:checked');
+            const tacheNom = document.getElementById('preview-tache-nom');
+            const tacheImg = document.getElementById('preview-tache-img');
+            const necessairesDiv = document.getElementById('preview-necessaires');
+            
+            // Reset
+            tacheNom.textContent = '';
+            tacheImg.innerHTML = '';
+            necessairesDiv.innerHTML = '';
+            
+            checked.forEach(checkbox => {
+                const data = necessairesData[checkbox.value];
+                if (!data) return;
+                
+                if (data.typeId == 4) { // Tâche
+                    tacheNom.textContent = data.nom;
+                    tacheImg.innerHTML = `<img src="${assetBasePath}${data.code}.png" 
+                        onerror="this.style.display='none'" 
+                        style="width: 80px; height: 80px; object-fit: contain;">`;
                 } else {
-                    item.style.display = 'none';
+                    const filename = data.typeName === 'consommable' ? '_' + data.code : data.code;
+                    necessairesDiv.innerHTML += `<img src="${assetBasePath}${filename}.png" 
+                        onerror="this.style.display='none'" 
+                        style="width: 40px; height: 40px; object-fit: contain; border: 1px solid #ccc;">`;
                 }
             });
-        });
-    });
-
-    // Fonction "Tout décocher" pour chaque bloc
-    document.querySelectorAll('.btn-uncheck-all').forEach(button => {
-        button.addEventListener('click', function() {
-            const typeId = this.dataset.type;
-            const list = document.querySelector(`.necessaire-list[data-type="${typeId}"]`);
-            const checkboxes = list.querySelectorAll('input[type="checkbox"]');
             
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = false;
+            // Mettre à jour aussi le MEO
+            updateMeoPreview();
+        }
+
+        // Écouter les changements du select MEO produit
+        const meoSelect = document.querySelector('select[id$="_meo_produit"]');
+        if (meoSelect) {
+            meoSelect.addEventListener('change', updateMeoPreview);
+        }
+
+        // Limitation à 1 checkbox par type
+        document.querySelectorAll('.necessaire-item input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    const typeBloc = this.closest('.necessaire-bloc');
+                    const otherCheckboxes = typeBloc.querySelectorAll('.necessaire-item input[type="checkbox"]');
+                    otherCheckboxes.forEach(other => {
+                        if (other !== this) {
+                            other.checked = false;
+                        }
+                    });
+                }
+                updatePreview();
             });
         });
+
+        // Fonction de recherche pour chaque bloc de nécessaires
+        document.querySelectorAll('.necessaire-search').forEach(searchInput => {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const typeId = this.dataset.type;
+                const list = document.querySelector(`.necessaire-list[data-type="${typeId}"]`);
+                const items = list.querySelectorAll('.necessaire-item');
+                
+                items.forEach(item => {
+                    const itemName = item.dataset.name;
+                    if (itemName.includes(searchTerm)) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Fonction "Tout décocher" pour chaque bloc
+        document.querySelectorAll('.btn-uncheck-all').forEach(button => {
+            button.addEventListener('click', function() {
+                const typeId = this.dataset.type;
+                const list = document.querySelector(`.necessaire-list[data-type="${typeId}"]`);
+                const checkboxes = list.querySelectorAll('input[type="checkbox"]');
+                
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                updatePreview();
+            });
+        });
+
+        // Initialiser la preview au chargement avec les valeurs déjà cochées
+        updatePreview();
     });
 </script>

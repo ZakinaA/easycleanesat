@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TempsContact{% endblock %}
+{% block title %}Temps de contact{% endblock %}
 
 {% block body %}
-    <h1>TempsContact</h1>
+    <h1>Temps de contact</h1>
 
     <table class="table">
         <tbody>
@@ -12,19 +12,21 @@
                 <td>{{ temps_contact.id }}</td>
             </tr>
             <tr>
-                <th>TempsContact</th>
+                <th>Temps de contact</th>
                 <td>{{ temps_contact.tempsContact }}</td>
             </tr>
             <tr>
                 <th>Picto</th>
-                <td>{{ temps_contact.picto }}</td>
+                <td>
+                    <img src="{{ asset('PictoTempContactPNG/' ~ temps_contact.id ~ '.png') }}" alt="Picto {{ temps_contact.tempsContact }}" style="max-height: 80px;">
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_temps_contact_index') }}">back to list</a>
+    <a href="{{ path('app_temps_contact_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_temps_contact_edit', {'id': temps_contact.id}) }}">edit</a>
+    <a href="{{ path('app_temps_contact_edit', {'id': temps_contact.id}) }}">Modifier</a>
 
     {{ include('temps_contact/_delete_form.html.twig') }}
 {% endblock %}

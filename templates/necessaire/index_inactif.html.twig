@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nécessaires désactivés{% endblock %}
+
+{% block body %}
+    <h1>Nécessaires désactivés</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_necessaire_new') }}" class="btn btn-success btn-lg">+ Créer un nouveau nécessaire</a>
+        <a href="{{ path('app_necessaire_index') }}" class="btn btn-primary">Retour aux nécessaires actifs</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for necessaire in necessaires %}
+            <tr>
+                <td>{{ necessaire.id }}</td>
+                <td>{{ necessaire.nom }}</td>
+                <td>{{ necessaire.code }}</td>
+                <td>{{ necessaire.typeNecessaire ? necessaire.typeNecessaire.nom : '' }}</td>
+                <td>
+                    <a href="{{ path('app_necessaire_show', {'id': necessaire.id}) }}">Afficher</a>
+                    <a href="{{ path('app_necessaire_edit', {'id': necessaire.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Aucun nécessaire désactivé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

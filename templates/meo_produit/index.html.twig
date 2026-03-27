@@ -1,51 +1,171 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
 {% extends 'base.html.twig' %}
 
-{% block title %}MeoProduit index{% endblock %}
+{% block title %}MeoProduit{% endblock %}
 
 {% block body %}
-    <h1>MeoProduit index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Mise en oeuvre produit</h1>
+        <a href="{{ path('app_meo_produit_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Creer</a>
+    </div>
+
+    <a href="{{ path('app_meo_produit_inactif') }}" class="btn btn-warning" style="margin-bottom: 15px;">Consulter les mises en oeuvre desactivees</a>
+
+    <form method="get" action="{{ path('app_meo_produit_index') }}" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 20px;">
+        <div>
+            <label for="meo-produit-filter-produit" style="display: block; margin-bottom: 4px;">Filtrer par produit</label>
+            <select id="meo-produit-filter-produit" name="produit" class="form-select">
+                <option value="">Tous les produits</option>
+                {% for produit in produits %}
+                    <option value="{{ produit.id }}" {% if selected_produit_id == produit.id %}selected{% endif %}>
+                        {{ produit.code }} - {{ produit.nom }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        {% if selected_produit_id %}
+            <a href="{{ path('app_meo_produit_index') }}" class="btn btn-outline-secondary">Reinitialiser</a>
+        {% endif %}
+    </form>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Code Meo produit</td>
+                <th>Code Meo produit</th>
                 <th>Nom produit</th>
                 <th>Nom contenant</th>
-                <th>Nom moyen dilution</th>
-                <th>Volume de Produit</th>
-                <th>actions</th>
+                <th>Nom moyen dosage</th>
+                <th>Volume produit</th>
+                <th>Picto</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for meo_produit in meo_produits %}
+            {% set product_color = '#ffffff' %}
+            {% if meo_produit.produit and meo_produit.produit.couleur %}
+                {% set product_color_name = meo_produit.produit.couleur|lower|trim %}
+                {% set product_color_map = {
+                    'vert': '#22c55e',
+                    'green': '#22c55e',
+                    'rouge': '#ef4444',
+                    'red': '#ef4444',
+                    'bleu': '#3b82f6',
+                    'blue': '#3b82f6',
+                    'jaune': '#f4d40b',
+                    'yellow': '#f4d40b',
+                    'orange': '#fb923c',
+                    'violet': '#a855f7',
+                    'purple': '#a855f7',
+                    'rose': '#ec4899',
+                    'pink': '#ec4899',
+                    'noir': '#111827',
+                    'black': '#111827',
+                    'blanc': '#ffffff',
+                    'white': '#ffffff',
+                    'gris': '#9ca3af',
+                    'gray': '#9ca3af',
+                    'grey': '#9ca3af',
+                    'marron': '#92400e',
+                    'brown': '#92400e'
+                } %}
+
+                {% if product_color_name starts with '#' %}
+                    {% set product_color = product_color_name %}
+                {% elseif product_color_map[product_color_name] is defined %}
+                    {% set product_color = product_color_map[product_color_name] %}
+                {% endif %}
+            {% endif %}
+
             <tr>
                 <td>{{ meo_produit.id }}</td>
                 <td>
-                {{ 
-                    (meo_produit.produit ? meo_produit.produit.code : '') 
-                    ~ '.0' ~ 
-                    (meo_produit.contenant ? meo_produit.contenant.id : '0') 
-                    ~ '.' ~ 
-                    (meo_produit.moyenDosage ? meo_produit.moyenDosage.code : '00') 
-                }}
+                    {{
+                        (meo_produit.produit ? meo_produit.produit.code : '')
+                        ~ '.0' ~
+                        (meo_produit.contenant ? meo_produit.contenant.id : '0')
+                        ~ '.' ~
+                        (meo_produit.moyenDosage ? meo_produit.moyenDosage.code : '00')
+                    }}
                 </td>
                 <td>{{ meo_produit.produit ? meo_produit.produit.nom : '-' }}</td>
                 <td>{{ meo_produit.contenant ? meo_produit.contenant.nom : '-' }}</td>
                 <td>{{ meo_produit.moyenDosage ? meo_produit.moyenDosage.nom : '-' }}</td>
-                <td>{{ meo_produit.volumeProduit }}</td>
                 <td>
-                    <a href="{{ path('app_meo_produit_show', {'id': meo_produit.id}) }}">show</a>
-                    <a href="{{ path('app_meo_produit_edit', {'id': meo_produit.id}) }}">edit</a>
+                    {% if meo_produit.volumeProduit is not null %}
+                        {{ meo_produit.volumeProduit }}{% if meo_produit.uniteVolume %} {{ meo_produit.uniteVolume.nom }}{% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    <div style="width: 140px; border: 1px solid #4b5563; border-radius: 4px; background: #ffffff; overflow: hidden;">
+                        <div style="display: flex; min-height: 74px;">
+                            <div style="width: 50%; padding: 6px; border-right: 1px solid #4b5563; background: {{ product_color }}; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                                {% if meo_produit.contenant %}
+                                    <img src="{{ asset('PictoContenantPNG/' ~ meo_produit.contenant.id ~ '.png') }}" alt="Contenant {{ meo_produit.contenant.nom }}" style="max-width: 42px; max-height: 42px;">
+                                {% endif %}
+                                <span style="font-size: 10px; font-weight: 700; line-height: 1.1; text-align: center; color: #111111;">
+                                    {% if meo_produit.produit %}
+                                        {{ meo_produit.produit.code }}{% if meo_produit.moyenDosage %}.{{ meo_produit.moyenDosage.code }}{% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div style="width: 50%; padding: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                <span style="font-size: 10px; color: #6b7280;">Eau</span>
+                                <span style="font-size: 12px; font-weight: 700; line-height: 1.2;">
+                                    {% if meo_produit.contenant and meo_produit.contenant.volumeEau is not null %}
+                                        {{ meo_produit.contenant.volumeEau }}{% if meo_produit.contenant.uniteVolume %} {{ meo_produit.contenant.uniteVolume.nom }}{% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div style="display: flex; min-height: 74px; border-top: 1px solid #4b5563;">
+                            <div style="width: 50%; padding: 6px; border-right: 1px solid #4b5563; display: flex; align-items: center; justify-content: center;">
+                                {% if meo_produit.moyenDosage %}
+                                    <img src="{{ asset('PictoMoyenDosagePNG/' ~ meo_produit.moyenDosage.id ~ '.png') }}" alt="Moyen dosage {{ meo_produit.moyenDosage.nom }}" style="max-width: 48px; max-height: 48px;">
+                                {% else %}
+                                    <span>-</span>
+                                {% endif %}
+                            </div>
+                            <div style="width: 50%; display: flex; flex-direction: column;">
+                                <div style="flex: 1; padding: 6px; display: flex; align-items: center; justify-content: center; text-align: center;">
+                                    <span style="font-size: 10px; font-weight: 700; line-height: 1.2;">
+                                        {% if meo_produit.volumeProduit is not null %}
+                                            {{ meo_produit.volumeProduit }}{% if meo_produit.uniteVolume %} {{ meo_produit.uniteVolume.nom }}{% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
+                                </div>
+                                <div style="flex: 1; padding: 6px; display: flex; align-items: center; justify-content: center;">
+                                    {% if meo_produit.tempsContact %}
+                                        <img src="{{ asset('PictoTempContactPNG/' ~ meo_produit.tempsContact.id ~ '.png') }}" alt="Temps contact {{ meo_produit.tempsContact.tempsContact }}" style="max-width: 38px; max-height: 38px;">
+                                    {% else %}
+                                        <span>-</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>
+
+                    {{ action_buttons('app_meo_produit_show', 'app_meo_produit_edit', meo_produit.id) }}
+
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="8">Aucun enregistrement trouve</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_meo_produit_new') }}">Create new</a>
 {% endblock %}

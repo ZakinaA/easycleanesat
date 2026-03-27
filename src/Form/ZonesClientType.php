@@ -7,6 +7,7 @@ use App\Entity\TypeZone;
 use App\Entity\ZonesClient;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,6 +24,8 @@ class ZonesClientType extends AbstractType
             ->add('typeZone', EntityType::class, [
                 'class' => TypeZone::class,
                 'choice_label' => 'nom',
+                'required' => false,
+                'attr' => ['style' => 'display:none'],
             ])
         ;
     }

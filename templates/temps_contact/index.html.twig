@@ -1,17 +1,21 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
 {% extends 'base.html.twig' %}
 
-{% block title %}TempsContact index{% endblock %}
+{% block title %}Temps de contact{% endblock %}
 
 {% block body %}
-    <h1>TempsContact index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Temps de contact</h1>
+        <a href="{{ path('app_temps_contact_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Creer</a>
+    </div>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>TempsContact</th>
+                <th>Temps de contact</th>
                 <th>Picto</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -19,19 +23,20 @@
             <tr>
                 <td>{{ temps_contact.id }}</td>
                 <td>{{ temps_contact.tempsContact }}</td>
-                <td>{{ temps_contact.picto }}</td>
                 <td>
-                    <a href="{{ path('app_temps_contact_show', {'id': temps_contact.id}) }}">show</a>
-                    <a href="{{ path('app_temps_contact_edit', {'id': temps_contact.id}) }}">edit</a>
+                    <img src="{{ asset('PictoTempContactPNG/' ~ temps_contact.id ~ '.png') }}" alt="Pictogramme {{ temps_contact.tempsContact }}" style="max-height: 40px;">
+                </td>
+                <td>
+
+                    {{ action_buttons('app_temps_contact_show', 'app_temps_contact_edit', temps_contact.id) }}
+
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="4">no records found</td>
+                <td colspan="4">Aucun enregistrement trouve</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_temps_contact_new') }}">Create new</a>
 {% endblock %}

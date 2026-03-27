@@ -693,6 +693,42 @@
 			.app-main > .container {
 				animation: fadeIn 0.25s ease;
 			}
+
+			/* ===== TILE GRID (sélection multiple générique) ===== */
+			.tile-select-hidden {
+				display: none !important;
+			}
+			.tile-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+				gap: 0.5rem;
+				margin-top: 0.4rem;
+			}
+			.tile-item {
+				padding: 0.5rem 0.6rem;
+				border: 2px solid #d0d4db;
+				border-radius: 6px;
+				background: #fff;
+				font-size: 0.82rem;
+				font-weight: 600;
+				text-align: center;
+				cursor: pointer;
+				user-select: none;
+				transition: border-color 0.15s, background 0.15s, color 0.15s, box-shadow 0.15s;
+				color: #1e2028;
+				line-height: 1.3;
+			}
+			.tile-item:hover {
+				border-color: #3d5a80;
+				background: #dce4ed;
+				color: #2c4460;
+			}
+			.tile-item.selected {
+				border-color: #3d5a80 !important;
+				background: #3d5a80 !important;
+				color: #fff !important;
+				box-shadow: 0 2px 8px rgba(61,90,128,0.35);
+			}
 		</style>
 	{% endblock %}
 
@@ -733,5 +769,33 @@
 				</div>
 			</footer>
 		</div>
+
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		document.querySelectorAll('[data-tile-grid]').forEach(function (grid) {
+			var selectId = grid.getAttribute('data-tile-grid');
+			var select = document.getElementById(selectId);
+			if (!select) return;
+
+			// Initialise surbrillance depuis les options déjà sélectionnées (attribut HTML)
+			Array.from(select.options).forEach(function (opt) {
+				if (opt.defaultSelected) {
+					var tile = grid.querySelector('[data-tile-value="' + opt.value + '"]');
+					if (tile) tile.classList.add('selected');
+				}
+			});
+
+			// Clic : toggle visuel + toggle option du select
+			grid.addEventListener('click', function (e) {
+				var tile = e.target.closest('[data-tile-value]');
+				if (!tile) return;
+				var isNow = !tile.classList.contains('selected');
+				tile.classList.toggle('selected', isNow);
+				var opt = select.querySelector('option[value="' + tile.getAttribute('data-tile-value') + '"]');
+				if (opt) opt.selected = isNow;
+			});
+		});
+	});
+	</script>
 	</body>
 </html>

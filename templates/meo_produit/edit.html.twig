@@ -1,14 +1,250 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit MeoProduit{% endblock %}
+{% block title %}Modifier MeoProduit{% endblock %}
 
 {% block body %}
-    <h1>Modifier une Mise en oeuvre produit</h1>
-    <div class="alert alert-warning" role="alert">
-        <strong>Attention !</strong> Action à risque ! Bonne pratique : archiver, supprimer créer une nouvelle mise en oeuvre
+    <h1>Modifier une Mise en oeuvre produit {{ include('meo_produit/_deactivate_form.html.twig') }}</h1>
+
+    {% set product_color = '#ffffff' %}
+    {% if meo_produit.produit and meo_produit.produit.couleur %}
+        {% set product_color_name = meo_produit.produit.couleur|lower|trim %}
+        {% set product_color_map = {
+            'vert': '#22c55e',
+            'green': '#22c55e',
+            'rouge': '#ef4444',
+            'red': '#ef4444',
+            'bleu': '#3b82f6',
+            'blue': '#3b82f6',
+            'jaune': '#f4d40b',
+            'yellow': '#f4d40b',
+            'orange': '#fb923c',
+            'violet': '#a855f7',
+            'purple': '#a855f7',
+            'rose': '#ec4899',
+            'pink': '#ec4899',
+            'noir': '#111827',
+            'black': '#111827',
+            'blanc': '#ffffff',
+            'white': '#ffffff',
+            'gris': '#9ca3af',
+            'gray': '#9ca3af',
+            'grey': '#9ca3af',
+            'marron': '#92400e',
+            'brown': '#92400e'
+        } %}
+
+        {% if product_color_name starts with '#' %}
+            {% set product_color = product_color_name %}
+        {% elseif product_color_map[product_color_name] is defined %}
+            {% set product_color = product_color_map[product_color_name] %}
+        {% endif %}
+    {% endif %}
+
+    <div style="width: 140px; border: 1px solid #4b5563; border-radius: 4px; background: #ffffff; overflow: hidden; margin-bottom: 20px;">
+        <div style="display: flex; min-height: 74px;">
+            <div id="meo-preview-product-panel" style="width: 50%; padding: 6px; border-right: 1px solid #4b5563; background: {{ product_color }}; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                <img
+                    id="meo-preview-contenant-icon"
+                    src="{% if meo_produit.contenant %}{{ asset('PictoContenantPNG/' ~ meo_produit.contenant.id ~ '.png') }}{% endif %}"
+                    alt="Contenant"
+                    style="max-width: 42px; max-height: 42px; {% if not meo_produit.contenant %}display: none;{% endif %}"
+                >
+                <span id="meo-preview-code" style="font-size: 10px; font-weight: 700; line-height: 1.1; text-align: center; color: #111111;">
+                    {% if meo_produit.produit %}
+                        {{ meo_produit.produit.code }}{% if meo_produit.moyenDosage %}.{{ meo_produit.moyenDosage.code }}{% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+            <div style="width: 50%; padding: 6px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                <span style="font-size: 10px; color: #6b7280;">Eau</span>
+                <span id="meo-preview-water" style="font-size: 12px; font-weight: 700; line-height: 1.2;">
+                    {% if meo_produit.contenant and meo_produit.contenant.volumeEau is not null %}
+                        {{ meo_produit.contenant.volumeEau }}{% if meo_produit.contenant.uniteVolume %} {{ meo_produit.contenant.uniteVolume.nom }}{% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div style="display: flex; min-height: 74px; border-top: 1px solid #4b5563;">
+            <div style="width: 50%; padding: 6px; border-right: 1px solid #4b5563; display: flex; align-items: center; justify-content: center;">
+                <img
+                    id="meo-preview-dosage-icon"
+                    src="{% if meo_produit.moyenDosage %}{{ asset('PictoMoyenDosagePNG/' ~ meo_produit.moyenDosage.id ~ '.png') }}{% endif %}"
+                    alt="Moyen dosage"
+                    style="max-width: 48px; max-height: 48px; {% if not meo_produit.moyenDosage %}display: none;{% endif %}"
+                >
+                <span id="meo-preview-dosage-empty" {% if meo_produit.moyenDosage %}style="display: none;"{% endif %}>-</span>
+            </div>
+            <div style="width: 50%; display: flex; flex-direction: column;">
+                <div style="flex: 1; padding: 6px; display: flex; align-items: center; justify-content: center; text-align: center;">
+                    <span id="meo-preview-volume" style="font-size: 10px; font-weight: 700; line-height: 1.2;">
+                        {% if meo_produit.volumeProduit is not null %}
+                            {{ meo_produit.volumeProduit }}{% if meo_produit.uniteVolume %} {{ meo_produit.uniteVolume.nom }}{% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </span>
+                </div>
+                <div style="flex: 1; padding: 6px; display: flex; align-items: center; justify-content: center;">
+                    <img
+                        id="meo-preview-time-icon"
+                        src="{% if meo_produit.tempsContact %}{{ asset('PictoTempContactPNG/' ~ meo_produit.tempsContact.id ~ '.png') }}{% endif %}"
+                        alt="Temps contact"
+                        style="max-width: 38px; max-height: 38px; {% if not meo_produit.tempsContact %}display: none;{% endif %}"
+                    >
+                    <span id="meo-preview-time-empty" {% if meo_produit.tempsContact %}style="display: none;"{% endif %}>-</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    {{ include('meo_produit/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    {{ include('meo_produit/_form.html.twig', {'button_label': 'Modifier'}) }}
 
     <a href="{{ path('app_meo_produit_index') }}" class="btn btn-secondary mt-3">Voir la liste des Mise en oeuvre produit</a>
+
+    <script>
+        (function () {
+            const productSelect = document.getElementById('{{ form.produit.vars.id }}');
+            const contenantSelect = document.getElementById('{{ form.contenant.vars.id }}');
+            const uniteVolumeSelect = document.getElementById('{{ form.uniteVolume.vars.id }}');
+            const moyenDosageSelect = document.getElementById('{{ form.moyenDosage.vars.id }}');
+            const tempsContactSelect = document.getElementById('{{ form.tempsContact.vars.id }}');
+            const volumeInput = document.getElementById('{{ form.volumeProduit.vars.id }}');
+
+            if (!productSelect || !contenantSelect || !uniteVolumeSelect || !moyenDosageSelect || !tempsContactSelect || !volumeInput) {
+                return;
+            }
+
+            const productPanel = document.getElementById('meo-preview-product-panel');
+            const contenantIcon = document.getElementById('meo-preview-contenant-icon');
+            const codeText = document.getElementById('meo-preview-code');
+            const waterText = document.getElementById('meo-preview-water');
+            const dosageIcon = document.getElementById('meo-preview-dosage-icon');
+            const dosageEmpty = document.getElementById('meo-preview-dosage-empty');
+            const volumeText = document.getElementById('meo-preview-volume');
+            const timeIcon = document.getElementById('meo-preview-time-icon');
+            const timeEmpty = document.getElementById('meo-preview-time-empty');
+
+            const colorMap = {
+                vert: '#22c55e',
+                green: '#22c55e',
+                rouge: '#ef4444',
+                red: '#ef4444',
+                bleu: '#3b82f6',
+                blue: '#3b82f6',
+                jaune: '#f4d40b',
+                yellow: '#f4d40b',
+                orange: '#fb923c',
+                violet: '#a855f7',
+                purple: '#a855f7',
+                rose: '#ec4899',
+                pink: '#ec4899',
+                noir: '#111827',
+                black: '#111827',
+                blanc: '#ffffff',
+                white: '#ffffff',
+                gris: '#9ca3af',
+                gray: '#9ca3af',
+                grey: '#9ca3af',
+                marron: '#92400e',
+                brown: '#92400e'
+            };
+
+            const getSelectedOption = (select) => select.options[select.selectedIndex] || null;
+            const baseUrl = '{{ asset('') }}';
+
+            const setIcon = (img, emptyLabel, folder, id) => {
+                if (!img) {
+                    return;
+                }
+
+                if (id) {
+                    img.src = baseUrl + folder + '/' + id + '.png';
+                    img.style.display = '';
+
+                    if (emptyLabel) {
+                        emptyLabel.style.display = 'none';
+                    }
+                } else {
+                    img.removeAttribute('src');
+                    img.style.display = 'none';
+
+                    if (emptyLabel) {
+                        emptyLabel.style.display = '';
+                    }
+                }
+            };
+
+            const resolveColor = (value) => {
+                if (!value) {
+                    return '#ffffff';
+                }
+
+                const normalized = value.trim().toLowerCase();
+
+                if (!normalized) {
+                    return '#ffffff';
+                }
+
+                if (normalized.startsWith('#')) {
+                    return normalized;
+                }
+
+                return colorMap[normalized] || '#ffffff';
+            };
+
+            const syncPreview = () => {
+                const productOption = getSelectedOption(productSelect);
+                const contenantOption = getSelectedOption(contenantSelect);
+                const uniteOption = getSelectedOption(uniteVolumeSelect);
+                const dosageOption = getSelectedOption(moyenDosageSelect);
+                const timeOption = getSelectedOption(tempsContactSelect);
+
+                const productCode = productOption ? (productOption.dataset.code || '') : '';
+                const productColor = productOption ? (productOption.dataset.color || '') : '';
+                const contenantId = contenantOption ? (contenantOption.dataset.id || '') : '';
+                const contenantVolume = contenantOption ? (contenantOption.dataset.volume || '') : '';
+                const contenantUnit = contenantOption ? (contenantOption.dataset.unit || '') : '';
+                const dosageId = dosageOption ? (dosageOption.dataset.id || '') : '';
+                const dosageCode = dosageOption ? (dosageOption.dataset.code || '') : '';
+                const timeId = timeOption ? (timeOption.dataset.id || '') : '';
+                const volumeValue = volumeInput.value.trim();
+                const volumeUnit = uniteOption ? (uniteOption.dataset.unit || '') : '';
+
+                productPanel.style.background = resolveColor(productColor);
+
+                if (productCode) {
+                    codeText.textContent = dosageCode ? productCode + '.' + dosageCode : productCode;
+                } else {
+                    codeText.textContent = '-';
+                }
+
+                if (contenantVolume) {
+                    waterText.textContent = contenantUnit ? contenantVolume + ' ' + contenantUnit : contenantVolume;
+                } else {
+                    waterText.textContent = '-';
+                }
+
+                if (volumeValue) {
+                    volumeText.textContent = volumeUnit ? volumeValue + ' ' + volumeUnit : volumeValue;
+                } else {
+                    volumeText.textContent = '-';
+                }
+
+                setIcon(contenantIcon, null, 'PictoContenantPNG', contenantId);
+                setIcon(dosageIcon, dosageEmpty, 'PictoMoyenDosagePNG', dosageId);
+                setIcon(timeIcon, timeEmpty, 'PictoTempContactPNG', timeId);
+            };
+
+            [productSelect, contenantSelect, uniteVolumeSelect, moyenDosageSelect, tempsContactSelect].forEach((field) => {
+                field.addEventListener('change', syncPreview);
+            });
+
+            volumeInput.addEventListener('input', syncPreview);
+            syncPreview();
+        })();
+    </script>
 {% endblock %}

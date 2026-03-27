@@ -24,6 +24,9 @@ class Client
     #[ORM\OneToMany(targetEntity: SitesClient::class, mappedBy: 'client')]
     private Collection $sitesClients;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $picto = null;
+
     public function __construct()
     {
         $this->sitesClients = new ArrayCollection();
@@ -72,6 +75,18 @@ class Client
                 $sitesClient->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPicto(): ?string
+    {
+        return $this->picto;
+    }
+
+    public function setPicto(?string $picto): static
+    {
+        $this->picto = $picto;
 
         return $this;
     }

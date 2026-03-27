@@ -1,4 +1,246 @@
+<div data-controller="intervention-form"
+     data-intervention-form-sites-url-value="{{ path('api_sites_by_client', {'clientId': '__CLIENT_ID__'}) }}"
+     data-intervention-form-contrats-url-value="{{ path('api_contrats_by_site', {'siteId': '__SITE_ID__'}) }}"
+     data-intervention-form-zones-url-value="{{ path('api_zones_by_site', {'siteId': '__SITE_ID__'}) }}">
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div{% if is_edit is defined and is_edit %} style="display:none"{% endif %}>
+        {{ form_label(form.client) }}
+        {{ form_widget(form.client, {
+            'attr': {
+                'data-intervention-form-target': 'client',
+                'data-action': 'change->intervention-form#onClientChange'
+            }
+        }) }}
+        {{ form_errors(form.client) }}
+    </div>
+    
+    <div{% if is_edit is defined and is_edit %} style="display:none"{% endif %}>
+        {{ form_label(form.site) }}
+        {{ form_widget(form.site, {
+            'attr': {
+                'data-intervention-form-target': 'site',
+                'data-action': 'change->intervention-form#onSiteChange'
+            }
+        }) }}
+        {{ form_errors(form.site) }}
+    </div>
+    
+    <div{% if is_edit is defined and is_edit %} style="display:none"{% endif %}>
+        {{ form_label(form.contrat) }}
+        {{ form_widget(form.contrat, {
+            'attr': {
+                'data-intervention-form-target': 'contrat'
+            }
+        }) }}
+        {{ form_errors(form.contrat) }}
+    </div>
+    
+    <div{% if is_edit is defined and is_edit %} style="display:none"{% endif %}>
+        {{ form_label(form.zonesClient) }}
+        {{ form_widget(form.zonesClient, {
+            'attr': {
+                'data-intervention-form-target': 'zone'
+            }
+        }) }}
+        {{ form_errors(form.zonesClient) }}
+    </div>
+    {{ form_row(form.redacteur) }}
+    <div class="form-group">
+        {{ form_label(form.dateCreation) }}
+        {{ form_widget(form.dateCreation, {'attr': {'class': 'date-input'}}) }}
+        {{ form_errors(form.dateCreation) }}
+    </div>
+    {{ form_row(form.nbTravailleur) }}
+    
+    <div class="form-group">
+        <label>Durée recommandé de l'intervention</label>
+        <div class="duree-container">
+            {{ form_widget(form.dureeHeure, {'attr': {'class': 'duree-input'}}) }}
+            <span class="duree-separator">:</span>
+            {{ form_widget(form.dureeMinute, {'attr': {'class': 'duree-input'}}) }}
+        </div>
+        {{ form_errors(form.dureeHeure) }}
+        {{ form_errors(form.dureeMinute) }}
+    </div>
+
+    <div class="form-group">
+        <label>Plages horaires de travail</label>
+        <table class="plage-table">
+            <thead>
+                <tr>
+                    <th colspan="2"></th>
+                    {% for jour in jours %}
+                        <th>{{ jour.nom }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2" class="plage-period">Matin</td>
+                    <td class="plage-label">Arrivé</td>
+                    {% for jour in jours %}
+                        {% set val = plagesMap[jour.id]['matin'] is defined ? plagesMap[jour.id]['matin'].heureDebut|date('H:i') : '' %}
+                        <td><input type="time" name="plage[{{ jour.id }}][matin][debut]" class="plage-input" min="00:00" max="13:00" value="{{ val }}"></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="plage-label">Départ</td>
+                    {% for jour in jours %}
+                        {% set val = plagesMap[jour.id]['matin'] is defined ? plagesMap[jour.id]['matin'].heureFin|date('H:i') : '' %}
+                        <td><input type="time" name="plage[{{ jour.id }}][matin][fin]" class="plage-input" min="00:00" max="13:00" value="{{ val }}"></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td rowspan="2" class="plage-period">Après-midi</td>
+                    <td class="plage-label">Arrivé</td>
+                    {% for jour in jours %}
+                        {% set val = plagesMap[jour.id]['apmidi'] is defined ? plagesMap[jour.id]['apmidi'].heureDebut|date('H:i') : '' %}
+                        <td><input type="time" name="plage[{{ jour.id }}][apmidi][debut]" class="plage-input" min="13:00" max="23:59" value="{{ val }}"></td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td class="plage-label">Départ</td>
+                    {% for jour in jours %}
+                        {% set val = plagesMap[jour.id]['apmidi'] is defined ? plagesMap[jour.id]['apmidi'].heureFin|date('H:i') : '' %}
+                        <td><input type="time" name="plage[{{ jour.id }}][apmidi][fin]" class="plage-input" min="13:00" max="23:59" value="{{ val }}"></td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="form-group">
+        <label>Éléments de sécurité</label>
+        {{ form_widget(form.elementSecurites, {'attr': {'class': 'tile-select-hidden', 'id': 'tile-select-elementSecurites', 'style': 'display:none!important'}}) }}
+        {{ form_errors(form.elementSecurites) }}
+        <div class="tile-grid" id="es-tile-grid">
+            {% for choice in form.elementSecurites.vars.choices %}
+                {% set isT21 = (choice.label == '0') %}
+                <div class="tile-item{% if choice.value in form.elementSecurites.vars.value or isT21 %} selected{% endif %}"
+                     data-tile-value="{{ choice.value }}"
+                     onclick="esTileToggle(this)"
+                     {% if isT21 %}data-auto-select="true"{% endif %}>
+                    {% if isT21 %}
+                        <img src="{{ asset('PictoNecessairePNG/T.21.png') }}" alt="T.21" class="tile-picto" onerror="this.style.display='none'">
+                        <span>T.21</span>
+                    {% else %}
+                        {% set pictoFile = choice.data.picto ? choice.data.picto : (choice.data.id ~ '.png') %}
+                        <img src="{{ asset('PictoElementSecuritePNG/' ~ pictoFile) }}" alt="{{ choice.label }}" class="tile-picto" onerror="this.style.display='none'">
+                        <span>{{ choice.label }}</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
+
+<style>
+.duree-container { display: flex; align-items: center; gap: 10px; }
+.duree-input { width: 80px; padding: 8px; font-size: 1.2em; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+.duree-separator { font-size: 1.5em; font-weight: bold; color: #333; }
+.date-input { width: 190px !important; }
+.plage-table {
+    border-collapse: collapse;
+    margin-top: 0.4rem;
+    font-size: 0.88rem;
+}
+.plage-table th, .plage-table td {
+    border: 1px solid #d0d4db;
+    padding: 0.35rem 0.6rem;
+    text-align: center;
+    white-space: nowrap;
+}
+.plage-table thead th {
+    background: var(--color-bg-alt, #f0f2f5);
+    font-weight: 700;
+    color: var(--color-text, #1e2028);
+}
+.plage-period {
+    font-weight: 700;
+    background: var(--color-bg-alt, #f0f2f5);
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    padding: 0.5rem 0.3rem;
+}
+.plage-label {
+    font-weight: 600;
+    text-align: left;
+    padding-left: 0.7rem;
+    color: #555;
+}
+.plage-input {
+    width: 90px;
+    padding: 3px 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-align: center;
+}
+.tile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+.tile-item {
+    padding: 0.5rem 0.6rem;
+    border: 2px solid #d0d4db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer !important;
+    user-select: none;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    color: #1e2028;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+}
+.tile-picto {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    display: block;
+}
+.tile-item:hover {
+    border-color: #3d5a80;
+    background: #dce4ed;
+    color: #2c4460;
+}
+.tile-item.selected {
+    border-color: #3d5a80 !important;
+    background: #3d5a80 !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(61,90,128,0.35);
+}
+</style>
+
+<script>
+function esTileToggle(tile) {
+    var isNow = !tile.classList.contains('selected');
+    tile.classList.toggle('selected', isNow);
+    var select = document.getElementById('tile-select-elementSecurites');
+    if (!select) return;
+    var val = tile.getAttribute('data-tile-value');
+    Array.from(select.options).forEach(function(opt) {
+        if (opt.value === val) opt.selected = isNow;
+    });
+}
+document.addEventListener('DOMContentLoaded', function() {
+    var autoTiles = document.querySelectorAll('[data-auto-select="true"]');
+    var select = document.getElementById('tile-select-elementSecurites');
+    if (!select) return;
+    autoTiles.forEach(function(tile) {
+        var val = tile.getAttribute('data-tile-value');
+        Array.from(select.options).forEach(function(opt) {
+            if (opt.value === val) opt.selected = true;
+        });
+    });
+});
+</script>

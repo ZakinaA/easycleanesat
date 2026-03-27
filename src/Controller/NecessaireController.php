@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/necessaire')]
 final class NecessaireController extends AbstractController
@@ -18,11 +19,20 @@ final class NecessaireController extends AbstractController
     public function index(NecessaireRepository $necessaireRepository): Response
     {
         return $this->render('necessaire/index.html.twig', [
-            'necessaires' => $necessaireRepository->findAll(),
+            'necessaires' => $necessaireRepository->findAllActif(),
+        ]);
+    }
+
+    #[Route('/inactif', name: 'app_necessaire_inactif', methods: ['GET'])]
+    public function indexInactif(NecessaireRepository $necessaireRepository): Response
+    {
+        return $this->render('necessaire/index_inactif.html.twig', [
+            'necessaires' => $necessaireRepository->findAllInactif(),
         ]);
     }
 
     #[Route('/new', name: 'app_necessaire_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the admin dashboard.')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $necessaire = new Necessaire();
@@ -51,6 +61,7 @@ final class NecessaireController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_necessaire_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the admin dashboard.')]
     public function edit(Request $request, Necessaire $necessaire, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(NecessaireType::class, $necessaire);
@@ -69,6 +80,7 @@ final class NecessaireController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_necessaire_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the admin dashboard.')]
     public function delete(Request $request, Necessaire $necessaire, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$necessaire->getId(), $request->getPayload()->getString('_token'))) {
@@ -77,5 +89,42 @@ final class NecessaireController extends AbstractController
         }
 
         return $this->redirectToRoute('app_necessaire_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/toggle-actif', name: 'app_necessaire_toggle_actif', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN', message: 'You are not allowed to access the admin dashboard.')]
+    public function toggleActif(Request $request, Necessaire $necessaire, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('toggle_actif'.$necessaire->getId(), $request->getPayload()->getString('_token'))) {
+            $necessaire->setActif(!$necessaire->isActif());
+            
+            if (!$necessaire->isActif()) {
+            $actionsLiees = $necessaire->getActions(); // Récupère directement les actions via la relation
+            $nbActionsDesactivees = 0;
+            
+            foreach ($actionsLiees as $action) {
+                if ($action->isActif()) {
+                    $action->setActif(false);
+                    $entityManager->persist($action);
+                    $nbActionsDesactivees++;
+                }
+            }
+            
+            if ($nbActionsDesactivees > 0) {
+                $this->addFlash('warning', sprintf(
+                    'Le nécessaire a été désactivé. %d action(s) lié(es) ont également été désactivée(s).',
+                    $nbActionsDesactivees
+                ));
+            } else {
+                $this->addFlash('success', 'Le nécessaire a été désactivé (aucune action liée).');
+            }
+        } else {
+            $this->addFlash('success', 'Le nécessaire a été réactivé.');
+        }
+            
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_necessaire_show', ['id' => $necessaire->getId()], Response::HTTP_SEE_OTHER);
     }
 }

@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}MoyenDosage{% endblock %}
+{% block title %}Moyen de dosage{% endblock %}
 
 {% block body %}
-    <h1>MoyenDosage</h1>
+    <h1>Moyen de dosage</h1>
 
     <table class="table">
         <tbody>
@@ -21,14 +21,16 @@
             </tr>
             <tr>
                 <th>Picto</th>
-                <td>{{ moyen_dosage.picto }}</td>
+                <td>
+                    <img src="{{ asset('PictoMoyenDosagePNG/' ~ moyen_dosage.id ~ '.png') }}" alt="Picto {{ moyen_dosage.nom }}" style="max-height: 80px;">
+                </td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_moyen_dosage_index') }}">back to list</a>
+    <a href="{{ path('app_moyen_dosage_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_moyen_dosage_edit', {'id': moyen_dosage.id}) }}">edit</a>
+    <a href="{{ path('app_moyen_dosage_edit', {'id': moyen_dosage.id}) }}">Modifier</a>
 
     {{ include('moyen_dosage/_delete_form.html.twig') }}
 {% endblock %}

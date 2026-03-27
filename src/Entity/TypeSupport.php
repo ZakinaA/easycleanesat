@@ -21,6 +21,12 @@ class TypeSupport
     #[ORM\OneToMany(targetEntity: SupportClient::class, mappedBy: 'typeSupport', orphanRemoval: true)]
     private Collection $supportClients;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $picto = null;
+
     public function __construct()
     {
         $this->supportClients = new ArrayCollection();
@@ -69,5 +75,29 @@ class TypeSupport
     public function __toString(): string
     {
         return $this->nom ?? '';
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPicto(): ?string
+    {
+        return $this->picto;
+    }
+
+    public function setPicto(?string $picto): static
+    {
+        $this->picto = $picto;
+
+        return $this;
     }
 }

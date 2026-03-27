@@ -13,6 +13,7 @@
 				{{ zones_client.sitesClient.nom }}</p>
 		</div>
 		<div class="btn-group">
+			<a href="{{ path('app_intervention_new', {'zones_client_id': zones_client.id}) }}" class="btn btn-success">+ Nouvelle intervention</a>
 			<a href="{{ path('app_support_client_new', {'zone_id': zones_client.id}) }}" class="btn btn-primary">Ajouter un support</a>
 			<a href="{{ path('app_zones_client_edit', {'id': zones_client.id}) }}" class="btn btn-secondary">Modifier</a>
 		</div>
@@ -37,9 +38,9 @@
 		<hr>
 
 		<h3>Supports</h3>
-		{% if zones_client.supportClients|length > 0 %}
+		{% if zones_client.supportsClient|length > 0 %}
 			<ul class="info-list">
-				{% for support in zones_client.supportClients %}
+				{% for support in zones_client.supportsClient %}
 					<li>
 						<span class="info-label">Support :</span>
 						<span>{{ support.typeSupport.nom }}</span>
@@ -50,9 +51,9 @@
 			<p class="text-muted text-sm">Aucun support pour cette zone</p>
 		{% endif %}
 	</div>
+	{{ include('zones_client/_delete_form.html.twig') }}
 
 	<div class="btn-group mt-3">
 		<a href="{{ path('app_client_show', {'id': zones_client.sitesClient.client.id}) }}" class="btn btn-secondary">← Retour au client</a>
-		{{ include('zones_client/_delete_form.html.twig') }}
 	</div>
 {% endblock %}
