@@ -1,12 +1,150 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Support Client
+{% block title %}Ajouter des supports
 {% endblock %}
 
 {% block body %}
-	<h1>Créer un support client</h1>
+	<div class="page-header">
+		<h1>Ajouter des supports</h1>
+		{% if zone %}
+			<p class="text-muted text-sm">Zone :
+				{{ zone.nom }}
+				—
+				{{ zone.sitesClient.nom }}
+				—
+				{{ zone.sitesClient.client.nom }}</p>
+		{% endif %}
+	</div>
 
-	{{ include('support_client/_form.html.twig') }}
+	<form method="POST" id="support-form">
+		<input type="hidden" name="zone_id" value="{{ zone ? zone.id : '' }}">
 
-	<a href="{{ path('app_support_client_index') }}">retour à la liste</a>
+		<div
+			class="form-card">
+			{# Barre de recherche #}
+			<div class="form-row">
+				<label>Rechercher un type de support</label>
+				<input type="text" id="search-type-support" placeholder="Rechercher (ex: sanitaire, sol, bureau...)" style="width:100%; padding:10px; border:1px solid var(--color-border); border-radius:8px; font-size:0.95rem;">
+			</div>
+
+			{# Supports sélectionnés #}
+			<div class="form-row">
+				<label>Supports sélectionnés</label>
+				<div id="selected-supports" style="display:flex; flex-wrap:wrap; gap:8px; min-height:40px; padding:8px; border:1px dashed var(--color-border); border-radius:8px;"></div>
+			</div>
+		</div>
+
+		{# Résultats pleine largeur #}
+		<div id="results-type-support" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:8px; margin:16px 0;"></div>
+
+		<div style="margin-top:16px;">
+			<button class="btn btn-primary" type="submit" id="btn-save" disabled>Sauvegarder</button>
+			<a href="{{ zone ? path('app_zones_client_show', {'id': zone.id}) : path('app_client_index') }}" class="btn btn-secondary">Annuler</a>
+		</div>
+	</form>
+
+	<script>
+		const searchInput = document.getElementById('search-type-support');
+const resultsContainer = document.getElementById('results-type-support');
+const selectedContainer = document.getElementById('selected-supports');
+const btnSave = document.getElementById('btn-save');
+const form = document.getElementById('support-form');
+let selectedSupports = {}; // { id: {id, nom, description} }
+let searchTimeout;
+
+searchInput.addEventListener('input', function () {
+clearTimeout(searchTimeout);
+const query = this.value.trim();
+if (query.length < 2) {
+resultsContainer.innerHTML = '';
+return;
+}
+
+searchTimeout = setTimeout(() => {
+fetch('{{ path("api_type_support_search") }}?q=' + encodeURIComponent(query)).then(r => r.json()).then(data => {
+resultsContainer.innerHTML = '';
+if (data.length === 0) {
+resultsContainer.innerHTML = '<p style="color:var(--color-text-secondary); grid-column:1/-1;">Aucun support trouvé</p>';
+return;
+}
+data.forEach(item => {
+const card = document.createElement('div');
+const isSelected = selectedSupports[item.id] !== undefined;
+card.style.cssText = 'padding:8px 10px; border:2px solid ' + (
+isSelected ? 'var(--color-primary)' : 'var(--color-border)'
+) + '; border-radius:6px; cursor:pointer; text-align:center; transition:all 0.15s; background:' + (
+isSelected ? '#dbe8f4' : 'var(--color-surface)'
+) + ';';
+card.innerHTML = '<div style="font-weight:600; color:var(--color-primary); font-size:0.85rem;">' + item.nom + '</div>' + (
+item.description ? '<div style="color:var(--color-text-secondary); font-size:0.7rem; margin-top:2px;">' + item.description + '</div>' : ''
+);
+
+card.addEventListener('click', () => {
+if (selectedSupports[item.id]) {
+delete selectedSupports[item.id];
+card.style.borderColor = 'var(--color-border)';
+card.style.background = 'var(--color-surface)';
+} else {
+selectedSupports[item.id] = {
+id: item.id,
+nom: item.nom,
+description: item.description
+};
+card.style.borderColor = 'var(--color-primary)';
+card.style.background = '#dbe8f4';
+} renderSelected();
+});
+
+card.addEventListener('mouseenter', () => {
+if (! selectedSupports[item.id]) 
+card.style.borderColor = 'var(--color-primary)';
+
+});
+card.addEventListener('mouseleave', () => {
+if (! selectedSupports[item.id]) 
+card.style.borderColor = 'var(--color-border)';
+
+});
+card.setAttribute('data-ts', item.id);
+resultsContainer.appendChild(card);
+});
+});
+}, 300);
+});
+
+function renderSelected() {
+selectedContainer.innerHTML = '';
+// Supprimer les anciens hidden inputs
+form.querySelectorAll('input[name="type_support_ids[]"]').forEach(el => el.remove());
+
+const ids = Object.keys(selectedSupports);
+btnSave.disabled = ids.length === 0;
+
+ids.forEach(id => {
+const s = selectedSupports[id];
+// Badge visuel
+const badge = document.createElement('div');
+badge.style.cssText = 'display:inline-flex; align-items:center; gap:6px; padding:5px 10px; background:#dbe8f4; border:2px solid var(--color-primary); border-radius:6px;';
+badge.innerHTML = '<strong style="color:var(--color-primary); font-size:0.8rem;">' + s.nom + '</strong>' + '<button type="button" style="background:none; border:none; color:var(--color-text-secondary); cursor:pointer; font-size:0.9rem;" data-id="' + id + '">✕</button>';
+badge.querySelector('button').addEventListener('click', () => {
+delete selectedSupports[id];
+renderSelected();
+// Mettre à jour la surbrillance dans les résultats
+const card = resultsContainer.querySelector('[data-ts="' + id + '"]');
+if (card) {
+card.style.borderColor = 'var(--color-border)';
+card.style.background = 'var(--color-surface)';
+}
+});
+selectedContainer.appendChild(badge);
+
+// Hidden input pour le formulaire
+const hidden = document.createElement('input');
+hidden.type = 'hidden';
+hidden.name = 'type_support_ids[]';
+hidden.value = id;
+form.appendChild(hidden);
+});
+}
+	</script>
 {% endblock %}

@@ -16,7 +16,27 @@ class NecessaireRepository extends ServiceEntityRepository
         parent::__construct($registry, Necessaire::class);
     }
 
-    //    /**
+    public function findAllActif(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.actif = :actif')
+            ->setParameter('actif', true)
+            ->orderBy('n.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findAllInactif(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.actif = :actif')
+            ->setParameter('actif', false)
+            ->orderBy('n.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     //     * @return Necessaire[] Returns an array of Necessaire objects
     //     */
     //    public function findByExampleField($value): array

@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit JourDeLaSemaine{% endblock %}
+{% block title %}Modifier JourDeLaSemaine{% endblock %}
 
 {% block body %}
-    <h1>Edit JourDeLaSemaine</h1>
+    <h1>Modifier JourDeLaSemaine</h1>
 
-    {{ include('jour_de_la_semaine/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('jour_de_la_semaine/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
 
-    <a href="{{ path('app_jour_de_la_semaine_index') }}">back to list</a>
+    <a href="{{ path('app_jour_de_la_semaine_index') }}">Retour a la liste</a>
 
     {{ include('jour_de_la_semaine/_delete_form.html.twig') }}
 {% endblock %}

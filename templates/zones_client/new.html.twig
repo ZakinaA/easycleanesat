@@ -1,12 +1,139 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer zone client
+{% block title %}Créer une zone
 {% endblock %}
 
 {% block body %}
-	<h1>Créer une nouvelle zone client</h1>
+	<div class="page-header">
+		<h1>Créer une zone</h1>
+	</div>
 
-	{{ include('zones_client/_form.html.twig') }}
+	{{ form_start(form, {'attr': {'id': 'zone-form'}}) }}
 
-	<a href="{{ path('app_zones_client_index') }}">Retour à la liste</a>
+	<div class="form-card">
+		<div class="form-row">
+			{{ form_label(form.nom) }}
+			{{ form_widget(form.nom) }}
+		</div>
+
+		<div class="form-row">
+			{{ form_label(form.sitesClient) }}
+			{{ form_widget(form.sitesClient) }}
+		</div>
+
+		{# Champ caché TypeZone #}
+		<div style="display:none">
+			{{ form_widget(form.typeZone) }}
+		</div>
+
+		{# Barre de recherche #}
+		<div class="form-row">
+			<label>Type de zone</label>
+			<input type="text" id="search-type-zone" placeholder="Rechercher un type de zone (ex: sanitaire, bureau, cuisine...)" style="width:100%; padding:10px; border:1px solid var(--color-border); border-radius:8px; font-size:0.95rem;">
+		</div>
+
+		{# Zone sélectionnée #}
+		<div id="selected-type-zone" style="margin-bottom:12px;"></div>
+	</div>
+
+	{# Résultats pleine largeur #}
+	<div id="results-type-zone" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap:8px; margin:16px 0;"></div>
+
+	<div style="margin-top:16px;">
+		<button class="btn btn-primary" type="submit">Sauvegarder</button>
+		<a href="{{ path('app_client_index') }}" class="btn btn-secondary">Annuler</a>
+	</div>
+
+	{{ form_end(form) }}
+
+	<a href="{{ path('app_client_index') }}" class="btn btn-secondary" style="margin-top:12px;">← Retour à la liste</a>
+
+	<script>
+		const searchInput = document.getElementById('search-type-zone');
+const resultsContainer = document.getElementById('results-type-zone');
+const selectedContainer = document.getElementById('selected-type-zone');
+const typeZoneSelect = document.getElementById('{{ form.typeZone.vars.id }}');
+let selectedId = typeZoneSelect.value || null;
+let searchTimeout;
+
+if (selectedId) {
+const opt = typeZoneSelect.querySelector('option[value="' + selectedId + '"]');
+if (opt) 
+showSelected(selectedId, opt.textContent, '');
+
+}
+
+searchInput.addEventListener('input', function () {
+clearTimeout(searchTimeout);
+const query = this.value.trim();
+if (query.length < 2) {
+resultsContainer.innerHTML = '';
+return;
+}
+
+searchTimeout = setTimeout(() => {
+fetch('{{ path("api_type_zone_search") }}?q=' + encodeURIComponent(query)).then(r => r.json()).then(data => {
+resultsContainer.innerHTML = '';
+if (data.length === 0) {
+resultsContainer.innerHTML = '<p style="color:var(--color-text-secondary); grid-column:1/-1;">Aucun type trouvé</p>';
+return;
+}
+data.forEach(item => {
+const card = document.createElement('div');
+const isSelected = selectedId == item.id;
+card.style.cssText = 'padding:8px 10px; border:2px solid ' + (
+isSelected ? 'var(--color-primary)' : 'var(--color-border)'
+) + '; border-radius:6px; cursor:pointer; text-align:center; transition:all 0.15s; background:' + (
+isSelected ? '#dbe8f4' : 'var(--color-surface)'
+) + ';';
+card.innerHTML = '<div style="font-weight:600; color:var(--color-primary); font-size:0.85rem;">' + item.nom + '</div>' + (
+item.description ? '<div style="color:var(--color-text-secondary); font-size:0.7rem; margin-top:2px;">' + item.description + '</div>' : ''
+);
+
+card.addEventListener('click', () => {
+selectTypeZone(item.id, item.nom, item.description);
+resultsContainer.querySelectorAll('div[data-tz]').forEach(c => {
+c.style.borderColor = 'var(--color-border)';
+c.style.background = 'var(--color-surface)';
+});
+card.style.borderColor = 'var(--color-primary)';
+card.style.background = '#dbe8f4';
+});
+card.addEventListener('mouseenter', () => {
+if (selectedId != item.id) 
+card.style.borderColor = 'var(--color-primary)';
+
+});
+card.addEventListener('mouseleave', () => {
+if (selectedId != item.id) 
+card.style.borderColor = 'var(--color-border)';
+
+});
+card.setAttribute('data-tz', item.id);
+resultsContainer.appendChild(card);
+});
+});
+}, 300);
+});
+
+function selectTypeZone(id, nom, desc) {
+selectedId = id;
+typeZoneSelect.value = id;
+showSelected(id, nom, desc);
+}
+
+function showSelected(id, nom, desc) {
+selectedContainer.innerHTML = '<div style="display:inline-flex; align-items:center; gap:8px; padding:6px 12px; background:#dbe8f4; border:2px solid var(--color-primary); border-radius:6px;">' + '<strong style="color:var(--color-primary); font-size:0.85rem;">' + nom + '</strong>' + '<button type="button" onclick="clearSelection()" style="background:none; border:none; color:var(--color-text-secondary); cursor:pointer; font-size:1rem;">✕</button>' + '</div>';
+}
+
+function clearSelection() {
+selectedId = null;
+typeZoneSelect.value = '';
+selectedContainer.innerHTML = '';
+resultsContainer.querySelectorAll('div[data-tz]').forEach(c => {
+c.style.borderColor = 'var(--color-border)';
+c.style.background = 'var(--color-surface)';
+});
+}
+	</script>
 {% endblock %}

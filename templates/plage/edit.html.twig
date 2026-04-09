@@ -1,13 +1,13 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
-{% block title %}Edit Plage{% endblock %}
+{% block title %}Modifier Plage{% endblock %}
 
 {% block body %}
-    <h1>Edit Plage</h1>
+    <h1>Modifier Plage</h1>
 
-    {{ include('plage/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('plage/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
 
-    <a href="{{ path('app_plage_index') }}">back to list</a>
+    <a href="{{ path('app_plage_index') }}">Retour a la liste</a>
 
     {{ include('plage/_delete_form.html.twig') }}
 {% endblock %}

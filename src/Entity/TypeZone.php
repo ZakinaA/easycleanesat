@@ -18,6 +18,9 @@ class TypeZone
     #[ORM\Column(length: 50)]
     private ?string $nom = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $description = null;
+
     #[ORM\OneToMany(targetEntity: ZonesClient::class, mappedBy: 'typeZone')]
     private Collection $zonesClients;
 
@@ -39,6 +42,17 @@ class TypeZone
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
         return $this;
     }
 

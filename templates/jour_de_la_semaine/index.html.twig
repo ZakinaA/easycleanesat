@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}JourDeLaSemaine index{% endblock %}
 
@@ -19,8 +19,8 @@
                 <td>{{ jour_de_la_semaine.id }}</td>
                 <td>{{ jour_de_la_semaine.nom }}</td>
                 <td>
-                    <a href="{{ path('app_jour_de_la_semaine_show', {'id': jour_de_la_semaine.id}) }}">show</a>
-                    <a href="{{ path('app_jour_de_la_semaine_edit', {'id': jour_de_la_semaine.id}) }}">edit</a>
+                    <a href="{{ path('app_jour_de_la_semaine_show', {'id': jour_de_la_semaine.id}) }}">Afficher</a>
+                    <a href="{{ path('app_jour_de_la_semaine_edit', {'id': jour_de_la_semaine.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +31,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_jour_de_la_semaine_new') }}">Create new</a>
+    <a href="{{ path('app_jour_de_la_semaine_new') }}">Creer</a>
 {% endblock %}

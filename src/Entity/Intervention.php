@@ -74,6 +74,9 @@ class Intervention
         $this->vigilanceInterventions = new ArrayCollection();
         $this->plages = new ArrayCollection();
         $this->actions = new ArrayCollection();
+        $this->numVersion = 1;
+        $this->dureeHeure = 0;
+        $this->dureeMinute = 0;
     }
 
     public function getId(): ?int

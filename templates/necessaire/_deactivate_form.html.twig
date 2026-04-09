@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_necessaire_toggle_actif', {'id': necessaire.id}) }}" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('toggle_actif' ~ necessaire.id) }}">
+    <button type="submit" class="btn {% if necessaire.actif %}btn-success{% else %}btn-danger{% endif %}" onclick="return confirm('Confirmer le changement d\'état ?');">
+        {% if necessaire.actif %}✓ Actif{% else %}✗ Désactivé{% endif %}
+    </button>
+</form>

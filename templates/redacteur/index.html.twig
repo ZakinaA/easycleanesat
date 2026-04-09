@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Redacteur index{% endblock %}
 
@@ -19,8 +19,8 @@
                 <td>{{ redacteur.id }}</td>
                 <td>{{ redacteur.initial }}</td>
                 <td>
-                    <a href="{{ path('app_redacteur_show', {'id': redacteur.id}) }}">show</a>
-                    <a href="{{ path('app_redacteur_edit', {'id': redacteur.id}) }}">edit</a>
+                    <a href="{{ path('app_redacteur_show', {'id': redacteur.id}) }}">Afficher</a>
+                    <a href="{{ path('app_redacteur_edit', {'id': redacteur.id}) }}">Modifier</a>
                 </td>
             </tr>
         {% else %}
@@ -31,5 +31,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_redacteur_new') }}">Create new</a>
+    <a href="{{ path('app_redacteur_new') }}">Creer</a>
 {% endblock %}
