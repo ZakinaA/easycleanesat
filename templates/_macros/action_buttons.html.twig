@@ -1,0 +1,15 @@
+{# Macro: boutons Voir/Modifier standardisés pour les pages index.
+   Paramètres :
+     show_route  - nom de la route de consultation (ex: 'app_produit_show')
+     edit_route  - nom de la route d'édition     (ex: 'app_produit_edit')
+     id          - identifiant de l'entité        (ex: produit.id)
+     admin_only  - (optionnel, défaut false) : affiche Modifier uniquement aux ROLE_ADMIN
+#}
+{% macro action_buttons(show_route, edit_route, id, admin_only = false) %}
+    <div class="btn-group">
+        <a href="{{ path(show_route, {'id': id}) }}" class="btn btn-outline btn-sm">Voir</a>
+        {% if not admin_only or (app.user and is_granted('ROLE_ADMIN')) %}
+            <a href="{{ path(edit_route, {'id': id}) }}" class="btn btn-secondary btn-sm">Modifier</a>
+        {% endif %}
+    </div>
+{% endmacro %}

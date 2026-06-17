@@ -16,7 +16,27 @@ class ActionsRepository extends ServiceEntityRepository
         parent::__construct($registry, Actions::class);
     }
 
-    //    /**
+    public function findAllActif(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.actif = :actif')
+            ->setParameter('actif', true)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function findAllInactif(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.actif = :actif')
+            ->setParameter('actif', false)
+            ->orderBy('a.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     //     * @return Actions[] Returns an array of Actions objects
     //     */
     //    public function findByExampleField($value): array

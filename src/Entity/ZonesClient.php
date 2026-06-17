@@ -27,8 +27,8 @@ class ZonesClient
     /**
      * @var Collection<int, SupportClient>
      */
-    #[ORM\OneToMany(targetEntity: SupportClient::class, mappedBy: 'zonesClient')]
-    private Collection $supportClients;
+    #[ORM\OneToMany(targetEntity: SupportClient::class, mappedBy: 'zonesClient', cascade: ['remove'], orphanRemoval: true)]
+    private Collection $supportsClient;
 
     /**
      * @var Collection<int, Intervention>
@@ -38,7 +38,7 @@ class ZonesClient
 
     public function __construct()
     {
-        $this->supportClients = new ArrayCollection();
+        $this->supportsClient = new ArrayCollection();
         $this->interventions = new ArrayCollection();
     }
 
@@ -86,27 +86,27 @@ class ZonesClient
     /**
      * @return Collection<int, SupportClient>
      */
-    public function getSupportClients(): Collection
+    public function getSupportsClient(): Collection
     {
-        return $this->supportClients;
+        return $this->supportsClient;
     }
 
-    public function addSupportClient(SupportClient $supportClient): static
+    public function addSupportsClient(SupportClient $supportsClient): static
     {
-        if (!$this->supportClients->contains($supportClient)) {
-            $this->supportClients->add($supportClient);
-            $supportClient->setZonesClient($this);
+        if (!$this->supportsClient->contains($supportsClient)) {
+            $this->supportsClient->add($supportsClient);
+            $supportsClient->setZonesClient($this);
         }
 
         return $this;
     }
 
-    public function removeSupportClient(SupportClient $supportClient): static
+    public function removeSupportsClient(SupportClient $supportsClient): static
     {
-        if ($this->supportClients->removeElement($s)) {
+        if ($this->supportsClient->removeElement($supportsClient)) {
             // set the owning side to null (unless already changed)
-            if ($supportClient->getZonesClient() === $this) {
-                $supportClient->setZonesClient(null);
+            if ($supportsClient->getZonesClient() === $this) {
+                $supportsClient->setZonesClient(null);
             }
         }
 

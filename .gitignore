@@ -21,3 +21,6 @@
  
 ###> suppression des migratoins ###
 /migrations/
+
+###> Claude Code worktrees ###
+/.claude/worktrees/

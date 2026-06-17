@@ -1,4 +1,5 @@
-{% extends 'base.html.twig' %}
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Intervention index{% endblock %}
 
@@ -32,19 +33,20 @@
                 <td>{{ intervention.nbTravailleur }}</td>
                 <td>{{ intervention.dureeHeure }}</td>
                 <td>{{ intervention.dureeMinute }}</td>
-                <td>{{ intervention.redacteur ? intervention.redacteur.id : '' }}</td>
-                <td>{{ intervention.zonesClient ? intervention.zonesClient.id : '' }}</td>
-                <td>{{ intervention.contrat ? intervention.contrat.id : '' }}</td>
+                <td>{{ intervention.redacteur ? intervention.redacteur.initial : '' }}</td>
+                <td>{{ intervention.zonesClient ? intervention.zonesClient.nom : '' }}</td>
+                <td>{{ intervention.contrat ? intervention.contrat.numero : '' }}</td>
                 <td>
-                    {% if intervention.actions is not empty %}
-                        {{ intervention.actions|length }} action(s)
+                    {% if intervention.suppInters is not empty %}
+                        {{ intervention.suppInters|length }} support(s)
                     {% else %}
                         -
                     {% endif %}
                 </td>
                 <td>
-                    <a href="{{ path('app_intervention_show', {'id': intervention.id}) }}">show</a>
-                    <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">edit</a>
+
+                    {{ action_buttons('app_intervention_show', 'app_intervention_edit', intervention.id) }}
+
                 </td>
             </tr>
         {% else %}
@@ -55,5 +57,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_intervention_new') }}">Create new</a>
+    <a href="{{ path('app_intervention_new') }}" class="btn btn-success">+ Ajouter une intervention</a>
 {% endblock %}

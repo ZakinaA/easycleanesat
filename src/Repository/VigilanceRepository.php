@@ -16,6 +16,34 @@ class VigilanceRepository extends ServiceEntityRepository
         parent::__construct($registry, Vigilance::class);
     }
 
+    /**
+     * @return Vigilance[] Returns an array of active Vigilance objects
+     */
+    public function findAllActif(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.actif = :val')
+            ->setParameter('val', true)
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    /**
+     * @return Vigilance[] Returns an array of inactive Vigilance objects
+     */
+    public function findAllInactif(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.actif = :val')
+            ->setParameter('val', false)
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Vigilance[] Returns an array of Vigilance objects
     //     */

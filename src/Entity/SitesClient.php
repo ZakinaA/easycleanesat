@@ -33,6 +33,9 @@ class SitesClient
     #[ORM\OneToMany(targetEntity: ZonesClient::class, mappedBy: 'sitesClient')]
     private Collection $zonesClients;
 
+    #[ORM\Column]
+    private ?bool $actif = null;
+
     public function __construct()
     {
         $this->contrats = new ArrayCollection();
@@ -124,6 +127,18 @@ class SitesClient
                 $zonesClient->setSitesClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

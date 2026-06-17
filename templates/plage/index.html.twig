@@ -1,4 +1,5 @@
-{% extends 'base.html.twig' %}
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Plage index{% endblock %}
 
@@ -10,7 +11,7 @@
             <tr>
                 <th>Id</th>
                 <th>HeureDebut</th>
-                <th>HeurFin</th>
+                <th>Heure de fin</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -19,10 +20,11 @@
             <tr>
                 <td>{{ plage.id }}</td>
                 <td>{{ plage.heureDebut ? plage.heureDebut|date('H:i:s') : '' }}</td>
-                <td>{{ plage.heurFin ? plage.heurFin|date('H:i:s') : '' }}</td>
+                <td>{{ plage.heureFin ? plage.heureFin|date('H:i:s') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_plage_show', {'id': plage.id}) }}">show</a>
-                    <a href="{{ path('app_plage_edit', {'id': plage.id}) }}">edit</a>
+
+                    {{ action_buttons('app_plage_show', 'app_plage_edit', plage.id) }}
+
                 </td>
             </tr>
         {% else %}
@@ -33,5 +35,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_plage_new') }}">Create new</a>
+    <a href="{{ path('app_plage_new') }}">Creer</a>
 {% endblock %}

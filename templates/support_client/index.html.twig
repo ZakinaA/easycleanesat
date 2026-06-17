@@ -1,3 +1,4 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
 {% extends 'base.html.twig' %}
 
 {% block title %}Support Client
@@ -18,9 +19,9 @@
 				<tr>
 					<td>{{ support_client.id }}</td>
 					<td>
-						<a href="{{ path('app_support_client_show', {'id': support_client.id}) }}">Voir</a>
-						<a href="{{ path('app_support_client_edit', {'id': support_client.id}) }}">Modifier
-						</a>
+
+					    {{ action_buttons('app_support_client_show', 'app_support_client_edit', support_client.id) }}
+
 					</td>
 				</tr>
 			{% else %}

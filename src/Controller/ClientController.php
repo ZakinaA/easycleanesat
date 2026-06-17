@@ -33,6 +33,19 @@ final class ClientController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($client);
             $entityManager->flush();
+
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoClientsPNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $client->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $client->setPicto($pictoFileName);
+                $entityManager->flush();
+            }
+
             return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('client/new.html.twig', [
@@ -56,6 +69,16 @@ final class ClientController extends AbstractController
         $form = $this->createForm(ClientType::class, $client);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir') . '/public/PictoClientsPNG';
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+                $pictoFileName = $client->getId() . '.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $client->setPicto($pictoFileName);
+            }
             $entityManager->flush();
             return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
         }

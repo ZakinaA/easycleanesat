@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\Actions;
-use App\Entity\Intervention;
 use App\Entity\MeoProduit;
 use App\Entity\Necessaire;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -38,13 +37,6 @@ class ActionsType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'label' => false,
-            ])
-            ->add('intervention', EntityType::class, [
-                'class' => Intervention::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-                'required' => false,
-                'label' => 'Interventions',
             ])
         ;
     }

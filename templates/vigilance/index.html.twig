@@ -1,16 +1,22 @@
-{% extends 'base.html.twig' %}
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Vigilance index{% endblock %}
 
 {% block body %}
-    <h1>Vigilance index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Vigilances</h1>
+        <a href="{{ path('app_vigilance_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Créer</a>
+    </div>
+
+    <a href="{{ path('app_vigilance_inactif') }}" class="btn btn-warning" style="margin-bottom: 15px;">Consulter les vigilances désactivées</a>
 
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <th style="width: 50px;">Id</th>
+                <th style="width: 100px;">Picto</th>
                 <th>Definition</th>
-                <th>Picto</th>
                 <th>actions</th>
             </tr>
         </thead>
@@ -18,11 +24,12 @@
         {% for vigilance in vigilances %}
             <tr>
                 <td>{{ vigilance.id }}</td>
+                <td><img style="width: 60px; height:auto;" src="../public/PictoVigilancePNG/{{vigilance.id}}.png"></td>
                 <td>{{ vigilance.definition }}</td>
-                <td>{{ vigilance.picto }}</td>
                 <td>
-                    <a href="{{ path('app_vigilance_show', {'id': vigilance.id}) }}">show</a>
-                    <a href="{{ path('app_vigilance_edit', {'id': vigilance.id}) }}">edit</a>
+
+                    {{ action_buttons('app_vigilance_show', 'app_vigilance_edit', vigilance.id) }}
+
                 </td>
             </tr>
         {% else %}
@@ -32,6 +39,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_vigilance_new') }}">Create new</a>
 {% endblock %}

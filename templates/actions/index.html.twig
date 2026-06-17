@@ -1,17 +1,24 @@
-{% extends 'base.html.twig' %}
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Actions index{% endblock %}
 
 {% block body %}
-    <h1>Actions index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Actions</h1>
+        <a href="{{ path('app_actions_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Créer</a>
+    </div>
+
+    <a href="{{ path('app_actions_inactif') }}" class="btn btn-warning" style="margin-bottom: 15px;">Consulter les actions désactivées</a>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Picto</th>
                 <th>Tache</th>
                 <th>Support</th>
-                <th>Matériel</th>
+                <th>MatÃ©riel</th>
                 <th>Reutilisable</th>
                 <th>Accessoire</th>
                 <th>Consommable</th>
@@ -25,17 +32,118 @@
         {% for action in actions %}
             <tr>
                 <td>{{ action.id }}</td>
+
+               <td style="border: solid 1px black; padding: 0; background-color: white;">
+                    {# Section haute : Nom de la tâche + Picto #}
+                    <div style="border-bottom: solid 1px black; padding: 8px;">
+                        {% for necessaire in action.necessaire %}
+                            {% if necessaire.typeNecessaire.id == 4 %}
+                                <div style="font-weight: bold; margin-bottom: 8px; text-align: center;">{{ necessaire.nom }}</div>
+                                <img src="{{ asset('PictoNecessairePNG/' ~ necessaire.code ~ '.png') }}"
+                                     onerror="this.style.display='none'"
+                                     style="width: 80px; height: 80px; object-fit: contain; display: block; margin: 0 auto;">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    {# Section basse : Grille 2x2 nécessaires + Picto MEO #}
+                    <div style="display: flex; padding: 4px;">
+                        {# Grille 2x2 des nécessaires #}
+                        <div style="display: grid; grid-template-columns: repeat(2, 40px); gap: 2px;">
+                            {% for necessaire in action.necessaire %}
+                                {% if necessaire.typeNecessaire.id != 4 %}
+                                    {% set filename = (necessaire.typeNecessaire.nom|lower == 'consommable') ? '_' ~ necessaire.code : necessaire.code %}
+                                    <img src="{{ asset('PictoNecessairePNG/' ~ filename ~ '.png') }}"
+                                         onerror="this.style.display='none'"
+                                         style="width: 40px; height: 40px; object-fit: contain; border: 1px solid #ccc;">
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        {# Picto MEO Produit à droite #}
+                        {% if action.meoProduit.produit.code != "P.00" %}
+                        {% set meo_produit = action.meoProduit %}
+                        {% set product_color = '#ffffff' %}
+                        {% if meo_produit.produit and meo_produit.produit.couleur %}
+                            {% set product_color_name = meo_produit.produit.couleur|lower|trim %}
+                            {% set product_color_map = {
+                                'vert': '#22c55e', 'green': '#22c55e',
+                                'rouge': '#ef4444', 'red': '#ef4444',
+                                'bleu': '#3b82f6', 'blue': '#3b82f6',
+                                'jaune': '#f4d40b', 'yellow': '#f4d40b',
+                                'orange': '#fb923c',
+                                'violet': '#a855f7', 'purple': '#a855f7',
+                                'rose': '#ec4899', 'pink': '#ec4899',
+                                'noir': '#111827', 'black': '#111827',
+                                'blanc': '#ffffff', 'white': '#ffffff',
+                                'gris': '#9ca3af', 'gray': '#9ca3af', 'grey': '#9ca3af',
+                                'marron': '#92400e', 'brown': '#92400e'
+                            } %}
+                            {% if product_color_name starts with '#' %}
+                                {% set product_color = product_color_name %}
+                            {% elseif product_color_map[product_color_name] is defined %}
+                                {% set product_color = product_color_map[product_color_name] %}
+                            {% endif %}
+                        {% endif %}
+
+                        <div style="margin-left: 8px; width: 70px; border: 1px solid #4b5563; border-radius: 4px; overflow: hidden; background: #ffffff; position: relative;">
+                            <div style="display: flex;">
+                                <div style="width: 50%; padding: 4px; border-right: 1px solid #4b5563; background: {{ product_color }}; display: flex; flex-direction: column; justify-content: space-between; align-items: center;">
+                                    {% if meo_produit.contenant %}
+                                        <img src="{{ asset('PictoContenantPNG/' ~ meo_produit.contenant.id ~ '.png') }}" style="max-width: 20px; max-height: 20px;">
+                                    {% endif %}
+                                    <span style="font-size: 8px; font-weight: 700; text-align: center; color: #111111;">
+                                        {% if meo_produit.produit %}{{ meo_produit.produit.code }}{% if meo_produit.moyenDosage %}.{{ meo_produit.moyenDosage.code }}{% endif %}{% endif %}
+                                    </span>
+                                </div>
+                                <div style="width: 50%; padding: 4px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                                    <span style="font-size: 7px; color: #6b7280;">Eau</span>
+                                    <span style="font-size: 8px; font-weight: 700;">
+                                        {% if meo_produit.contenant and meo_produit.contenant.volumeEau is not null %}
+                                            {{ meo_produit.contenant.volumeEau }}{% if meo_produit.contenant.uniteVolume %} {{ meo_produit.contenant.uniteVolume.nom }}{% endif %}
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            <div style="display: flex; border-top: 1px solid #4b5563;">
+                                <div style="width: 50%; padding: 4px; border-right: 1px solid #4b5563; display: flex; align-items: center; justify-content: center;">
+                                    {% if meo_produit.moyenDosage %}
+                                        <img src="{{ asset('PictoMoyenDosagePNG/' ~ meo_produit.moyenDosage.id ~ '.png') }}" style="max-width: 24px; max-height: 24px;">
+                                    {% endif %}
+                                </div>
+                                <div style="width: 50%; display: flex; flex-direction: column;">
+                                    <div style="flex: 1; padding: 4px; display: flex; align-items: center; justify-content: center; text-align: center;">
+                                        <span style="font-size: 8px; font-weight: 700;">
+                                            {% if meo_produit.volumeProduit is not null %}
+                                                {{ meo_produit.volumeProduit }}{% if meo_produit.uniteVolume %} {{ meo_produit.uniteVolume.nom }}{% endif %}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                    <div style="flex: 1; padding: 4px; display: flex; align-items: center; justify-content: center;">
+                                        {% if meo_produit.tempsContact %}
+                                            <img src="{{ asset('PictoTempContactPNG/' ~ meo_produit.tempsContact.id ~ '.png') }}" style="max-width: 19px; max-height: 19px;">
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </td>
+
                 {% for necessaire in action.necessaire %}
-                <td>{{necessaire.code}} </td>
+                <td><a href="{{path('app_necessaire_show', {'id': necessaire.id})}}">{{necessaire.code}}</a> </td>
                 {% endfor %}
 
-                <!--<td>{{dump(action)}}</td>-->
                 <td>{{action.meoProduit.produit.code}}</td>
                 <td>{{action.meoProduit.contenant ? action.meoProduit.contenant.id : '0'}}</td>
                 <td>{{action.meoProduit.moyenDosage ? action.meoProduit.moyenDosage.code : '0'}}</td>
                 <td>
-                    <a href="{{ path('app_actions_show', {'id': action.id}) }}">show</a>
-                    <a href="{{ path('app_actions_edit', {'id': action.id}) }}">edit</a>
+
+                    {{ action_buttons('app_actions_show', 'app_actions_edit', action.id) }}
+
                 </td>
 
             </tr>
@@ -46,6 +154,4 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_actions_new') }}">Create new</a>
 {% endblock %}

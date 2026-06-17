@@ -26,12 +26,30 @@ final class ContenantController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $contenant = new Contenant();
-        $form = $this->createForm(ContenantType::class, $contenant);
+        $form = $this->createForm(ContenantType::class, $contenant, [
+            'picto_upload_mode' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+
             $entityManager->persist($contenant);
             $entityManager->flush();
+
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir').'/public/PictoContenantPNG';
+
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+
+                $pictoFileName = $contenant->getId().'.png';
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+
+                $contenant->setPicto($pictoFileName);
+                $entityManager->flush();
+            }
 
             return $this->redirectToRoute('app_contenant_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -53,10 +71,32 @@ final class ContenantController extends AbstractController
     #[Route('/{id}/edit', name: 'app_contenant_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Contenant $contenant, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ContenantType::class, $contenant);
+        $form = $this->createForm(ContenantType::class, $contenant, [
+            'picto_upload_mode' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $uploadedPicto = $form->get('pictoFile')->getData();
+
+            if ($uploadedPicto) {
+                $targetDirectory = $this->getParameter('kernel.project_dir').'/public/PictoContenantPNG';
+
+                if (!is_dir($targetDirectory)) {
+                    mkdir($targetDirectory, 0775, true);
+                }
+
+                $pictoFileName = $contenant->getId().'.png';
+                $targetPath = $targetDirectory.'/'.$pictoFileName;
+
+                if (file_exists($targetPath)) {
+                    unlink($targetPath);
+                }
+
+                $uploadedPicto->move($targetDirectory, $pictoFileName);
+                $contenant->setPicto($pictoFileName);
+            }
+
             $entityManager->flush();
 
             return $this->redirectToRoute('app_contenant_index', [], Response::HTTP_SEE_OTHER);

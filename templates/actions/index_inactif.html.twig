@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actions désactivées{% endblock %}
+
+{% block body %}
+    <h1>Actions désactivées</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_actions_new') }}" class="btn btn-success btn-lg">+ Créer une nouvelle action</a>
+        <a href="{{ path('app_actions_index') }}" class="btn btn-primary">Retour aux actions actives</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nécessaires</th>
+                <th>Code Produit</th>
+                <th>Id Contenant</th>
+                <th>Code Moyen Dilution</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for action in actions %}
+            <tr>
+                <td>{{ action.id }}</td>
+                <td>
+                    {% for necessaire in action.necessaire %}
+                        {{ necessaire.code }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>{{ action.meoProduit ? action.meoProduit.produit.code : '-' }}</td>
+                <td>{{ action.meoProduit ? (action.meoProduit.contenant ? action.meoProduit.contenant.id : '0') : '-' }}</td>
+                <td>{{ action.meoProduit ? (action.meoProduit.moyenDosage ? action.meoProduit.moyenDosage.code : '0') : '-' }}</td>
+                <td>
+                    <a href="{{ path('app_actions_show', {'id': action.id}) }}">Afficher</a>
+                    <a href="{{ path('app_actions_edit', {'id': action.id}) }}">Modifier</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Aucune action désactivée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

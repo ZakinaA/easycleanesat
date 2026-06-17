@@ -53,8 +53,12 @@ final class ContratController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_contrat_show', methods: ['GET'])]
-    public function show(Contrat $contrat): Response
+    public function show(?Contrat $contrat): Response
     {
+        if (!$contrat) {
+            throw $this->createNotFoundException('Le contrat demandé n\'existe pas.');
+        }
+        
         return $this->render('contrat/show.html.twig', [
             'contrat' => $contrat,
         ]);

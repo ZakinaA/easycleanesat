@@ -1,39 +1,44 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
 {% extends 'base.html.twig' %}
 
-{% block title %}MoyenDosage index{% endblock %}
+{% block title %}Moyens de dosage{% endblock %}
 
 {% block body %}
-    <h1>MoyenDosage index</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Moyens de dosage</h1>
+        <a href="{{ path('app_moyen_dosage_new') }}" class="btn btn-success" style="font-size: 16px; padding: 10px 20px;">+ Creer</a>
+    </div>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
+                <th>Picto</th>
                 <th>Nom</th>
                 <th>Code</th>
-                <th>Picto</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for moyen_dosage in moyen_dosages %}
             <tr>
                 <td>{{ moyen_dosage.id }}</td>
+                <td>
+                    <img src="{{ asset('PictoMoyenDosagePNG/' ~ moyen_dosage.id ~ '.png') }}" alt="Pictogramme {{ moyen_dosage.nom }}" style="max-height: 40px;">
+                </td>
                 <td>{{ moyen_dosage.nom }}</td>
                 <td>{{ moyen_dosage.code }}</td>
-                <td>{{ moyen_dosage.picto }}</td>
                 <td>
-                    <a href="{{ path('app_moyen_dosage_show', {'id': moyen_dosage.id}) }}">show</a>
-                    <a href="{{ path('app_moyen_dosage_edit', {'id': moyen_dosage.id}) }}">edit</a>
+
+                    {{ action_buttons('app_moyen_dosage_show', 'app_moyen_dosage_edit', moyen_dosage.id) }}
+
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="5">Aucun enregistrement trouve</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_moyen_dosage_new') }}">Create new</a>
 {% endblock %}

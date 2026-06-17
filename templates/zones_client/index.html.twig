@@ -1,3 +1,4 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des zones
@@ -32,10 +33,9 @@
 						<td>{{ zone.sitesClient.nom }}</td>
 						<td>{{ zone.sitesClient.client.nom }}</td>
 						<td>
-							<div class="btn-group">
-								<a href="{{ path('app_zones_client_show', {'id': zone.id}) }}" class="btn btn-outline btn-sm">Voir</a>
-								<a href="{{ path('app_zones_client_edit', {'id': zone.id}) }}" class="btn btn-secondary btn-sm">Modifier</a>
-							</div>
+
+							{{ action_buttons('app_zones_client_show', 'app_zones_client_edit', zone.id) }}
+
 						</td>
 					</tr>
 				{% else %}

@@ -1,4 +1,23 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    {{ form_row(form.nom) }}
+    <div class="mb-3" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: nowrap;">
+        <div style="flex: 1 1 auto;">
+            {{ form_label(form.volumeEau) }}
+            {{ form_widget(form.volumeEau) }}
+            {{ form_errors(form.volumeEau) }}
+        </div>
+        <div style="flex: 0 0 220px;">
+            {{ form_label(form.uniteVolume) }}
+            {{ form_widget(form.uniteVolume) }}
+            {{ form_errors(form.uniteVolume) }}
+        </div>
+    </div>
+    {% if form.pictoFile is defined %}
+        {{ form_row(form.pictoFile) }}
+    {% elseif picto_auto_value is defined %}
+        {{ form_widget(form.picto, {'type': 'hidden', 'value': picto_auto_value}) }}
+    {% else %}
+        {{ form_row(form.picto) }}
+    {% endif %}
+    <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
 {{ form_end(form) }}

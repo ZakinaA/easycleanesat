@@ -27,6 +27,9 @@ class Vigilance
     #[ORM\OneToMany(targetEntity: VigilanceIntervention::class, mappedBy: 'vigilance')]
     private Collection $vigilanceInterventions;
 
+    #[ORM\Column]
+    private ?bool $actif = true;
+
     public function __construct()
     {
         $this->vigilanceInterventions = new ArrayCollection();
@@ -87,6 +90,18 @@ class Vigilance
                 $vigilanceIntervention->setVigilance(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

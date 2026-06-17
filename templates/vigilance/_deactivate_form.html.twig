@@ -1,0 +1,6 @@
+<form method="post" action="{{ path('app_vigilance_toggle_actif', {'id': vigilance.id}) }}" style="display:inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token('toggle_actif' ~ vigilance.id) }}">
+    <button type="submit" class="btn {% if vigilance.actif %}btn-success{% else %}btn-danger{% endif %}" onclick="return confirm('Confirmer le changement d\'état ?');">
+        {% if vigilance.actif %}✓ Actif{% else %}✗ Désactivé{% endif %}
+    </button>
+</form>

@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Intervention{% endblock %}
 
@@ -37,40 +37,22 @@
             </tr>
             <tr>
                 <th>Redacteur</th>
-                <td>{{ intervention.redacteur ? intervention.redacteur.id : '' }}</td>
+                <td>{{ intervention.redacteur ? intervention.redacteur.initial : '' }}</td>
             </tr>
             <tr>
                 <th>ZonesClient</th>
-                <td>{{ intervention.zonesClient ? intervention.zonesClient.id : '' }}</td>
+                <td>{{ intervention.zonesClient ? intervention.zonesClient.nom : '' }}</td>
             </tr>
             <tr>
                 <th>Contrat</th>
-                <td>{{ intervention.contrat ? intervention.contrat.id : '' }}</td>
-            </tr>
-            <tr>
-                <th>Actions</th>
-                <td>
-                    {% if intervention.actions is not empty %}
-                        <ul>
-                            {% for action in intervention.actions %}
-                                <li>
-                                    <a href="{{ path('app_actions_show', {'id': action.id}) }}">
-                                        Action #{{ action.id }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        Aucune action
-                    {% endif %}
-                </td>
+                <td>{{ intervention.contrat ? intervention.contrat.numero : '' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_intervention_index') }}">back to list</a>
+    <a href="{{ path('app_intervention_index') }}">Retour a la liste</a>
 
-    <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">edit</a>
+    <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">Modifier</a>
 
     {{ include('intervention/_delete_form.html.twig') }}
 {% endblock %}

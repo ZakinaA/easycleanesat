@@ -1,4 +1,5 @@
-{% extends 'base.html.twig' %}
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
 
 {% block title %}Redacteur index{% endblock %}
 
@@ -19,8 +20,9 @@
                 <td>{{ redacteur.id }}</td>
                 <td>{{ redacteur.initial }}</td>
                 <td>
-                    <a href="{{ path('app_redacteur_show', {'id': redacteur.id}) }}">show</a>
-                    <a href="{{ path('app_redacteur_edit', {'id': redacteur.id}) }}">edit</a>
+
+                    {{ action_buttons('app_redacteur_show', 'app_redacteur_edit', redacteur.id) }}
+
                 </td>
             </tr>
         {% else %}
@@ -31,5 +33,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_redacteur_new') }}">Create new</a>
+    <a href="{{ path('app_redacteur_new') }}">Creer</a>
 {% endblock %}

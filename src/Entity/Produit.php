@@ -30,6 +30,9 @@ class Produit
     #[ORM\OneToMany(targetEntity: MeoProduit::class, mappedBy: 'produit')]
     private Collection $meoProduits;
 
+    #[ORM\Column]
+    private ?bool $actif = null;
+
     public function __construct()
     {
         $this->meoProduits = new ArrayCollection();
@@ -102,6 +105,18 @@ class Produit
                 $meoProduit->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActif(): ?bool
+    {
+        return $this->actif;
+    }
+
+    public function setActif(bool $actif): static
+    {
+        $this->actif = $actif;
 
         return $this;
     }

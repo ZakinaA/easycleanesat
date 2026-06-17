@@ -1,0 +1,42 @@
+{% from '_macros/action_buttons.html.twig' import action_buttons %}
+﻿{% extends 'base.html.twig' %}
+
+{% block title %}Vigilances désactivées{% endblock %}
+
+{% block body %}
+    <h1>Vigilances désactivées</h1>
+
+    <div class="mb-3">
+        <a href="{{ path('app_vigilance_new') }}" class="btn btn-success btn-lg">+ Créer une nouvelle vigilance</a>
+        <a href="{{ path('app_vigilance_index') }}" class="btn btn-primary">Retour aux vigilances actives</a>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th style="width: 50px;">Id</th>
+                <th style="width: 100px;">Picto</th>
+                <th>Definition</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for vigilance in vigilances %}
+            <tr>
+                <td>{{ vigilance.id }}</td>
+                <td><img style="width: 60px; height:auto;" src="../PictoVigilancePNG/{{vigilance.id}}.png"></td>
+                <td>{{ vigilance.definition }}</td>
+                <td>
+
+                    {{ action_buttons('app_vigilance_show', 'app_vigilance_edit', vigilance.id) }}
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Aucune vigilance désactivée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

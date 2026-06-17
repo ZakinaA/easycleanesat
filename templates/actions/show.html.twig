@@ -3,7 +3,7 @@
 {% block title %}Action #{{ action.id }}{% endblock %}
 
 {% block body %}
-    <h1>Détails de l'Action #{{ action.id }}</h1>
+    <h1>Détails de l'Action #{{ action.id }} {{ include('actions/_deactivate_form.html.twig') }}</h1>
 
     <div class="card mb-3">
         <div class="card-header">
@@ -76,10 +76,10 @@
             <h3>Interventions</h3>
         </div>
         <div class="card-body">
-            {% if action.intervention|length > 0 %}
+            {% if action.suppInters|length > 0 %}
                 <ul>
-                    {% for intervention in action.intervention %}
-                        <li>Intervention #{{ intervention.id }}</li>
+                    {% for suppInter in action.suppInters %}
+                        <li>Intervention #{{ suppInter.intervention.id }}</li>
                     {% endfor %}
                 </ul>
             {% else %}
